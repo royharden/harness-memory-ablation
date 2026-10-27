@@ -10,6 +10,7 @@ from .statistics import task_cluster_comparison
 from .comparisons import descriptive_comparisons
 from .design import calculate_task_statistics
 from .trajectories import summarize_trajectory, summarize_public_checkpoints
+from .outcomes import resolve_cell_outcome
 
 
 class ExportValidationError(ValueError):
@@ -114,22 +115,8 @@ def analyze_export(payload: Any) -> dict:
         if identifier is not None and (identifier not in attempts or attempts[identifier]["cell_id"] != cell_id):
             raise ExportValidationError("invalid_planned_attempt_link")
         attempt = attempts.get(identifier)
-        disposition = "unstarted"
-        if attempt:
-            grade = grades.get(identifier)
-            if attempt["status"] in ("pending", "running", "cleanup_pending"):
-                disposition = "unknown"
-            elif "infra_excluded" in limitation_by_attempt[identifier]:
-                disposition = "infra_excluded"
-            elif grade and grade["verdict"] == "evaluator_error":
-                disposition = "evaluator_error"
-            elif attempt["status"] in ("timeout", "spend_cap", "output_cap", "crash") and attempt.get("started_at") is not None:
-                disposition = "fail"
-            elif grade and grade["verdict"] in ("pass", "fail"):
-                disposition = grade["verdict"]
-            else:
-                disposition = "unknown"
-        outcomes.append({**cell, "disposition": disposition})
+        disposition = resolve_cell_outcome(cell, attempt, grades.get(identifier), limitation_by_attempt[identifier])
+        outcomes.append({**cell, "declared_disposition": cell["disposition"], "disposition": disposition})
 
     group_rows: dict[tuple, list[dict]] = defaultdict(list)
     for row in outcomes:

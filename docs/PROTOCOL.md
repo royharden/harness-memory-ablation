@@ -57,3 +57,12 @@ refuse until reconciled, rather than being summed by guessed scope. Ordered
 PublicCheckpoint tripwire IDs and boolean/null observations map explicitly to rot's
 pass/fail/unknown input. Feature-completed observations, missing reasons, source and
 reference evidence stay separate; they do not invent accrued-feature test inventory.
+
+Static source reconciliation of DL1's integrated shared models and pinned DL3
+declarations confirms canonical planned cells also carry their scheduler disposition.
+Analysis retains that declared value separately from the derived outcome: missing
+evaluator/infrastructure/unknown slots remain missing even without an attempt or
+fabricated grade. Contradictory terminal declarations and grade/failure evidence
+refuse instead of selecting a favorable outcome. A pre-launch refusal remains
+unstarted; cleanup/running states remain unknown. This is semantic source inspection,
+not executed reference resolution or evidence authentication.
