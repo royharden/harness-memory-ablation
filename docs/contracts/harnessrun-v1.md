@@ -95,7 +95,7 @@ prove identical hidden system settings; Claude versus Codex is a system comparis
 | Record | Required fields beyond common fields |
 | --- | --- |
 | HarnessEvent | observed provenance, `event_id`, `attempt_id`, `sequence`, `kind`, `payload` |
-| UsageObservation | observed provenance, `observation_id`, `attempt_id`, `scope_id`, `source_event_id`, `counter_basis` (`incremental`, `cumulative`, `final`), `usage_source` (literal `harness_reported`), `coverage` (`complete`, `partial`, `unknown`), `unknown_reason?`, `buckets`, `input_total?`, `cached_input_subset?`, `reasoning_output_subset?`, `harness_estimate_usd?`, `pricetable_sha256?` |
+| UsageObservation | observed provenance, `observation_id`, `attempt_id`, `scope_id`, `counter_basis` (`incremental`, `cumulative`, `final`), `usage_source` (literal `harness_reported`), `coverage` (`complete`, `partial`, `unknown`), `unknown_reason?`, `buckets`, `input_total?`, `cached_input_subset?`, `reasoning_output_subset?`, `harness_estimate_usd?`, `pricetable_sha256?` |
 
 HarnessEvent payload is a closed tagged union: `started` has `{launch_id}`;
 `response` has `{response_id}`; `memory_source` has `{source_ref, source_sha256?,
@@ -105,6 +105,18 @@ where code is parser_schema_drift. Sequence is ordered per attempt; event IDs
 deduplicate replay. Memory source observations are partial loader evidence;
 absence of a read event does not establish non-reading or absence of context.
 Tool/output content stays in bounded redacted capture artifacts, not open payloads.
+
+UsageObservation references its original raw stream record through observed
+provenance (`evidence_ref`, `evidence_sha256`, `source_locator`), not a HarnessEvent
+ID. For usage, source_locator is a half-open byte range `bytes:start:end` in the
+hash-bound capture, with decimal nonnegative start < end. The exporter must
+resolve that capture/range; unresolved provenance is invalid. The same rule
+applies to incremental, cumulative and final observations, whether or not that
+raw record also yields a response/stop event. Raw record identity for replay is
+the tuple (attempt_id, evidence_sha256, source_locator); observation_id identifies
+the parsed observation. Re-encoding the same raw record under another observation
+ID cannot add usage. Cross-capture replay needs pinned provider IDs/scope evidence;
+if unavailable it is ambiguous coverage, not an assumed fresh billable increment.
 
 Buckets is closed with required nullable counters: `ordinary_input`,
 `cached_input`, `cache_write_5m`, `cache_write_1h`, `output`. These are disjoint
