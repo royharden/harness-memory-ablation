@@ -6,11 +6,9 @@ opaque references, never independent answers, credentials or monetary authority.
 
 from __future__ import annotations
 
-import hashlib
-import json
 from typing import Annotated, Any, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import Field, model_validator
 
 from harnessrun import (
     AttemptRecord,
@@ -18,6 +16,10 @@ from harnessrun import (
     Limitation,
     ModelEvidence,
     UsageObservation,
+    ClosedModel,
+    canonical_json as canonical_json_bytes,
+    sha256_json,
+    strict_json,
 )
 
 Identifier = Annotated[str, Field(min_length=1, max_length=256)]
@@ -27,19 +29,13 @@ TaskClass = Literal["independent", "decision", "misleading"]
 Mode = Literal["SIMULATED", "MEASURED"]
 
 
-class ClosedModel(BaseModel):
-    model_config = ConfigDict(extra="forbid", strict=True, frozen=True, allow_inf_nan=False)
-
-
 def canonical_json(value: Any) -> str:
-    """Canonical metadata bytes: sorted keys, UTF-8 text, no nonfinite numbers."""
-    if isinstance(value, BaseModel):
-        value = value.model_dump(mode="json")
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    """Explicit text view of shared canonical bytes for SQLite/text files.
 
-
-def sha256_json(value: Any) -> str:
-    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+    Hashing uses harnessrun.sha256_json directly, not a second algorithm.
+    Callers needing bytes use harnessrun.canonical_json.
+    """
+    return canonical_json_bytes(value).decode("utf-8")
 
 
 def _unique(values: list[str], label: str) -> None:
@@ -538,14 +534,6 @@ class PublicExport(ClosedModel):
 
 def parse_export(payload: str | bytes | dict[str, Any]) -> PublicExport:
     """Validate closed records and cross-references; no code, grader or I/O runs."""
-    def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-        result: dict[str, Any] = {}
-        for key, value in pairs:
-            if key in result:
-                raise ValueError("duplicate JSON key in campaign export")
-            result[key] = value
-        return result
-
-    decoded = payload if isinstance(payload, dict) else json.loads(payload, object_pairs_hook=unique_object)
-    text = canonical_json(decoded)
-    return PublicExport.model_validate_json(text)
+    raw = canonical_json_bytes(payload) if isinstance(payload, dict) else payload.encode("utf-8") if isinstance(payload, str) else payload
+    decoded = strict_json(raw)
+    return PublicExport.model_validate_json(canonical_json_bytes(decoded))

@@ -9,12 +9,11 @@ separate so a crash after begin cannot be mistaken for an unstarted attempt.
 from __future__ import annotations
 
 from contextlib import contextmanager
-import hashlib
 from pathlib import Path
 import sqlite3
 from typing import Iterator, Literal, TypeVar
 
-from harnessrun import AttemptRecord
+from harnessrun import AttemptRecord, sha256_bytes
 from pydantic import BaseModel, ConfigDict
 
 from .campaign import PlannedCell, ScheduleManifest, TrajectoryCheckpoint, canonical_json
@@ -41,7 +40,7 @@ class AttemptLifecycle(BaseModel):
 
 
 def _hash(payload: str) -> str:
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return sha256_bytes(payload.encode("utf-8"))
 
 
 def _digest(value: str) -> None:

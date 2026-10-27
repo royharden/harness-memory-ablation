@@ -10,7 +10,11 @@ not scientific admission or demonstrated runtime compatibility.
 `PlannedCell`, `ScheduleManifest`, `TrajectoryCheckpoint`, `TripwireObservation`,
 `AdmissionReference`, `CostObservation`, `PublicCheckpoint`, `ResultEligibility`,
 `PublicExport`. Helper functions
-`canonical_json` and `sha256_json` hash sorted compact UTF-8 JSON metadata.
+`canonical_json` is an explicit UTF-8 text view of shared
+`harnessrun.canonical_json` bytes for SQLite/text files. `sha256_json` is the
+shared helper reexported directly, not reimplemented. Source reconciliation uses
+corrected DL1 `f0b82a4`; `parse_export` uses shared `strict_json` duplicate-key,
+nonfinite and byte-cap checks before model validation.
 `parse_export(str | bytes | dict) -> PublicExport` rejects duplicate keys,
 mixed modes, unresolved IDs, population/hash drift and false grading linkage.
 It imports the ten-record closure types from `harnessrun` directly, without a
@@ -73,5 +77,7 @@ is opened during import. Future runtime metadata belongs outside OneDrive.
 
 All source/AST review, hash/reference/schema behavior and SQLite/longitudinal
 semantics remain unexecuted. Public release, independent data, rights and runtime
-activation need their own gates. Exact central helper/type interfaces must be
-reconciled with DL1 before claiming source coherence; no fallback aliases are used.
+activation need their own gates. Shared record attributes/imports have been
+statically reconciled with corrected DL1 `f0b82a4`; no fallback aliases or
+duplicated canonical helpers are used. This source comparison supplies no import,
+runtime or packaging result.
