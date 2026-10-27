@@ -28,3 +28,12 @@ adversarial execution, wheel integration and publication remain deferred. Source
 inspection or AST parsing establishes none of those gates. A supplied MEASURED
 label is provenance, not acceptance. Admission, candidate outcome, construction
 status and execution gates must remain distinct.
+
+The current consumer targets the provisional `m11.campaign.PublicExport` producer
+name. If unavailable it raises an explicit export-contract error; it never substitutes
+a permissive local schema. Cost-observation field names and eligibility metadata
+need producer reconciliation before source coherence is claimed. Until admission,
+freeze and result-embargo eligibility can be resolved, even MEASURED exports produce
+descriptive output with an explicit inference-unavailable reason. The separate pure
+task-cluster helper implements the planned bootstrap and repeat-0 summaries for a
+future eligible caller; calling it does not establish admission or acceptance.
