@@ -51,8 +51,8 @@ authorize accounts, live calls, spending or publication.
 
 ### Receipt envelope
 
-All mandatory evidence must resolve; missing or unverifiable evidence remains pending
-or refuses the gate, never defaults to pass. These are semantic fields, not an approved
+All mandatory evidence must resolve. Before a gate is attempted its status is PENDING;
+an attempted admission with missing/unverifiable required evidence is NO-GO. These are semantic fields, not an approved
 wire schema or signature mechanism.
 
 | Field group | Required meaning |
@@ -74,8 +74,9 @@ Public/build-visible receipts contain counts, IDs, checks and opaque references 
 no hidden assertions, expected values, patch content or secret locations.
 
 Preserve per-item and per-rerun outcomes; an aggregate pass cannot conceal a missing
-case. Distinguish absent evidence (PENDING), observed failed admission (NO-GO), and
-observed complete pass (PASS). Never emit a PASS receipt from static source review.
+case. PENDING means the gate has not been attempted or is awaiting its authorized run.
+Once admission is attempted, missing required evidence or any failed control is NO-GO;
+only a complete observed pass is PASS. Never emit PASS from static source review.
 Exposure invalidates confirmation; preserve the event and stop, do not reseal the same
 exposed material as untouched confirmation.
 
@@ -136,7 +137,9 @@ reference artifact hashes and custodian-owned expected behavior references.
 
 The P0 sample has its separately specified two references; it is not a shortened
 held-out trajectory. Full dev inventory is 2×12=24 references; held-out is 4×12=48.
-No future feature spec/test/reference is exposed early. Only permitted source/treatment
+No future feature spec/test is exposed early. No reference or oracle artifact is ever
+exposed to the experimental agent, including current/past checkpoint references.
+Only permitted source/treatment
 tree carries between fresh sessions; archive before/after source/memory hashes and
 invalid writes. No hidden feedback, oracle repair or rollback. A failed candidate
 continues through 12 prescribed sessions unless safety/infrastructure prevents it;
@@ -158,13 +161,29 @@ tool call/file change. All executed costs remain. Missing slots make primary cam
 INCOMPLETE; preserve all planned slots, no replacement. These distinctions must not
 be collapsed by admission records or the future grader.
 
-Refuse or retain PENDING on absent appointment/signature/rights/semantic evidence,
+Before admission runs keep the gate PENDING. At an attempted gate return NO-GO on
+absent appointment/signature/rights/semantic evidence,
 wrong author/lineage, inconsistent scope/count/hash, leakage/family overlap, unstable
 grader, failed oracle/null/wrong control, invalid seed/claim expectation, tampered seal,
 isolation/canary breach, early held-out access, or unverifiable evidence. Identify
 affected opaque IDs and reason without exposing hidden content. A previously passed
 P0 does not cure an invalid full pack. Static format compliance proves none of these
 runtime properties.
+
+## Freeze, result embargo and retirement (§§5,7)
+
+Before held-out opening, bind the approved full-pack receipt to a frozen runner,
+analysis, treatments, schedule, exact provider/model/settings, image/CLI/code versions,
+and budget proof. Preregistration pins suite/task/treatment/code/image/CLI/config/
+provider/model/price/analysis hashes, estimands/exclusions, seeds, caps, billing proof,
+authorization, schedule and checksum. Changed pins require a disclosed prospective
+amendment; no retrospective rewriting. Full-pack admission alone cannot open the pack.
+
+Record every access and lineage exposure. Hidden results stay unread until frozen
+final analysis. Custodian/operator enforce the embargo; builder-readable intake
+reports only permitted counts/checks/opaque IDs. Any exposure invalidates confirmation.
+Retire used held-out material from later confirmation; any later release is manual
+and requires separate approval. Do not silently recycle or release it.
 
 ## Producer/consumer seams and future acceptance
 
