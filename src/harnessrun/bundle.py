@@ -2,7 +2,7 @@
 
 from .codec import ContractError, canonical_json, sha256_bytes
 from .models import (
-    AttemptRecord, AttemptSpec, GradeResult, HarnessEvent, LaunchSpec,
+    AttemptRecord, AttemptSpec, CapabilityRecord, GradeResult, HarnessEvent, LaunchSpec,
     Limitation, ModelEvidence, ProviderConfig, UsageObservation, WireRecord,
 )
 
@@ -20,6 +20,9 @@ def validate_bundle(records: tuple[WireRecord, ...]) -> None:
     if len(modes) > 1:
         raise ContractError("mixed SIMULATED/MEASURED bundle")
     configs = {sha256_bytes(canonical_json(r)): r for r in records if isinstance(r, ProviderConfig)}
+    for capability in (r for r in records if isinstance(r, CapabilityRecord)):
+        if capability.provider_config_sha256 not in configs:
+            raise ContractError("unresolved capability provider config")
     for spec in specs.values():
         if spec.provider_config_sha256 not in configs:
             raise ContractError("unresolved provider config")

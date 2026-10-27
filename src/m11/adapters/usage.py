@@ -51,17 +51,19 @@ class UsageNormalizer:
         previous = self._raw.get(raw_key)
         scope_key = (observation.attempt_id, observation.scope_id)
         state = self._scopes.setdefault(scope_key, _Scope())
+        if id_key in self._ids and self._ids[id_key] != raw_key:
+            state.blocked = True
+            return self._unknown(observation, "observation ID reused with different raw provenance")
+        # Register even a replay's alternate parsed ID before returning zero.
+        # Otherwise that alias could later be reused for unrelated countable bytes.
+        self._ids[id_key] = raw_key
         if previous is not None:
             if previous == fingerprint:
                 return self._result(observation, {k: 0 for k in BUCKETS},
                                     observation.coverage, ("exact raw observation replay",), True)
             state.blocked = True
             return self._unknown(observation, "conflicting interpretations of identical raw provenance")
-        if id_key in self._ids and self._ids[id_key] != raw_key:
-            state.blocked = True
-            return self._unknown(observation, "observation ID reused with different raw provenance")
         self._raw[raw_key] = fingerprint
-        self._ids[id_key] = raw_key
         if state.capture_sha256 is not None and state.capture_sha256 != observation.evidence_sha256:
             state.blocked = True
             return self._unknown(observation, "cross-capture scope replay/freshness ambiguous without pinned provider identity")

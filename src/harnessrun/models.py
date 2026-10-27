@@ -252,7 +252,7 @@ class UsageObservation(ObservedRecord):
     attempt_id: Identifier
     scope_id: Identifier
     counter_basis: Literal["incremental", "cumulative", "final"]
-    usage_source: Literal["harness_reported"] = "harness_reported"
+    usage_source: Literal["harness_reported"]
     coverage: Coverage
     unknown_reason: Text | None
     buckets: UsageBuckets
@@ -328,6 +328,26 @@ class AttemptRecord(Record):
             raise ValueError("pre-launch refusal cannot invent launched work")
         if self.status == "refused" and not self.limitation_codes:
             raise ValueError("refusal requires a limitation reason")
+        if self.status in {"pending", "refused"} and self.process_state != "not_started":
+            raise ValueError("unstarted/refused attempt cannot claim an active or exited process")
+        if self.status == "pending" and any(x is not None for x in (
+            self.started_at, self.ended_at, self.exit_code, self.artifact_sha256
+        )):
+            raise ValueError("pending attempt cannot contain executed outcomes")
+        if self.status == "running" and (
+            self.process_state != "running" or self.started_at is None or self.ended_at is not None
+            or self.exit_code is not None or self.launch_id is None or self.launch_spec_sha256 is None
+        ):
+            raise ValueError("running attempt requires a live launched process without terminal outcome")
+        if self.status == "cleanup_pending" and (
+            self.process_state != "cleanup_pending" or self.launch_id is None or self.launch_spec_sha256 is None
+        ):
+            raise ValueError("cleanup_pending requires unresolved launched-process ownership")
+        if self.status in {"finished", "timeout", "spend_cap", "output_cap", "crash"} and (
+            self.process_state != "exited" or self.started_at is None
+            or self.launch_id is None or self.launch_spec_sha256 is None
+        ):
+            raise ValueError("terminal process outcome requires a launched, exited process")
         if (self.transcript_ref is None) != (self.transcript_sha256 is None):
             raise ValueError("transcript reference/hash must be paired")
         if self.process_state == "cleanup_pending" and self.status != "cleanup_pending":
