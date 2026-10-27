@@ -25,6 +25,39 @@ reason, numerator/denominator where applicable, population, mode, coverage and
 input references. Missing is never implicitly zero. SIMULATED and MEASURED inputs
 cannot form one research table or estimate. Simulation produces no inferential table.
 
+## Accepted producer mapping
+
+Consume [harnessrun/1](../contracts/harnessrun-v1.md), the
+[schedule](../protocol/preregistration-schedule.md) and
+[trajectory transitions](../protocol/longitudinal.md) through these mappings.
+These links identify accepted format documents, not executed producers.
+
+| Consumer need | Accepted producer fields and interpretation |
+|---|---|
+| Population and grouping | Frozen registration/schedule supplies class, system, arm, task/seed, slot order and planned denominator. AttemptSpec supplies campaign_id, cell_id, experiment_kind, mode, task_id, treatment_id, harness_id, repeat and checkpoint. Resolve the schedule slot-to-cell and seed-to-task references explicitly from frozen metadata; do not assume identifier spelling or invent new wire fields. Group task/diagnostic/probe/smoke/longitudinal separately. |
+| Attempt lineage | Join AttemptRecord to AttemptSpec via attempt_id and attempt_spec_sha256, to LaunchSpec through launch_id/launch_spec_sha256 and to its scheduled cell_id. Preserve parent_attempt_id and retry_of. No attempt means a visible unstarted planned slot, not a missing row to drop. |
+| Scientific outcome | AttemptRecord.status/process_state describes lifecycle, not correctness. finished is not pass; GradeResult.verdict supplies pass/fail/evaluator_error bound to attempt_id and artifact_sha256. A grade for another artifact is invalid. Refused pre-launch null fields are not dispatched failures. Candidate failures after dispatch stay failures; evidenced infra_excluded remains missing. |
+| Usage and price | usage_observation_ids resolve UsageObservation records; usage_coverage is complete/partial/unknown. usage_source is harness_reported. Preserve scope_id, counter_basis and raw provenance; consume normalized disjoint buckets, never add cumulative/final totals or input/reasoning subsets twice. Price from dated pricetable_sha256; harness_estimate_usd is a cross-check, not priced authority or actual charge. |
+| Identity | model_evidence_ids resolve ModelEvidence.model_evidence_id; model_coverage and every relevant response_id constrain eligibility. requested_model_id, advertised_model_id and provider_returned_model_id stay distinct. configuration_echo/harness_advertised or hypothesis/unsupported never become provider proof. |
+| Money and artifacts | ledger_run_id/ledger_reservation_id are M9 references, billing_provenance_hashes identify separate reconciliation evidence. artifact_sha256 and hash-bound redacted references establish lineage, not rights or permission to read private material. |
+
+Closed harnessrun fields cannot be extended with analysis-only class, trajectory,
+denominator or interval fields. Those belong in a separately specified derived
+export joined to frozen protocol metadata. Protocol semantic groups are not yet
+a closed schedule/trajectory wire schema; unresolved joins remain unavailable
+pending owner reconciliation, rather than inferred from filenames or row order.
+Required nullable producer fields retain null and explicit reason. Validate
+schema_version/record_type, references and hashes before deriving a result.
+
+cleanup_pending overrides terminal lifecycle until resolution; retain prior stop
+events without counting them as a second slot or a grader pass. Apply the protocol
+safety pause to evaluator faults and other stop gates even when a produced tree
+exists. Infrastructure tree loss ends the trajectory with unknown remaining
+checkpoints; candidate errors continue only while safety/authorization gates allow.
+Before/after hashes and absent source-only memory come from the checkpoint metadata,
+not guessed from an AttemptRecord artifact field. Admission receipt mappings remain
+pending DL2 acceptance; this reconciliation does not invent them.
+
 ## Task outcomes and missingness — section 7
 
 Primary schedule: 36 tasks, balanced 12/class, three arms M0/M1/M2 and three

@@ -29,6 +29,48 @@ not public evidence links. Only admitted redacted exports may enter a future pub
 report; excerpts require manual review before export/publication. Publication,
 rights and licences require their separate approvals.
 
+## Accepted producer and display mapping
+
+Read the [metrics producer mapping](../metrics/CONTRACT.md#accepted-producer-mapping)
+for joins and scientific eligibility. The accepted
+[harnessrun contract](../contracts/harnessrun-v1.md) owns raw record fields;
+[protocol schedule](../protocol/preregistration-schedule.md) and
+[longitudinal transitions](../protocol/longitudinal.md) supply planned populations
+and checkpoint semantics. Rendering does not add fields to closed wire records.
+
+Display `AttemptRecord.mode` and `AttemptSpec.mode` consistently with frozen
+registration mode; disagreement is invalid input, not permission to pick a label.
+Keep `status`, `process_state` and `GradeResult.verdict` separate in attempt views:
+finished never means pass and cleanup_pending never means clean completion.
+Pre-launch refusal with null launch/start/artifact fields remains visible with its
+reason; dispatched failures retain their costs. Join all attempts to planned slots
+without replacing missing cells. Explicit protocol metadata must resolve cell/slot,
+seed/task and trajectory identity; unresolved metadata blocks the affected derived
+view, not the visibility of the planned population or missing evidence.
+
+Expose usage_coverage and model_coverage as complete/partial/unknown, alongside
+nullable fields and unknown_reason. Identity views resolve model_evidence_ids to
+ModelEvidence, showing each of the requested, advertised and provider-returned IDs,
+evidence_kind and strength. Coverage and provider-response evidence, not a configured
+label, control fixed-model wording. Usage observations retain evidence_ref,
+evidence_sha256 and bytes:start:end source_locator; these are opaque provenance,
+not automatically clickable artifact URLs. Report normalized disjoint usage once;
+separate harness_estimate_usd, dated-price analysis and ledger/billing reconciliation.
+See the [monetary boundary](../protocol/authorization-money.md).
+
+Import Limitation.code/raw_code and its closed disposition
+(stop/retain_descriptive/missing/secondary) without replacing them with display prose.
+Report affected campaign/slot/checkpoint IDs by validated joins from attempt_id;
+do not add those fields to the closed Limitation wire record. The limitations table
+below explains interpretation and gate consequences, not an alternate enum.
+Aliases remain recorded in raw_code. Aggregate unavailable reasons such as
+undefined_zero_pass are derived-result reasons, not new harnessrun Limitation codes.
+No synthetic attempt/limitation row is fabricated for an unstarted slot.
+
+Admission-dependent reference layouts remain pending accepted DL2 formats. Until
+then show pending eligibility; do not manufacture a receipt or claim source review
+as admission. These mappings establish documentation compatibility only.
+
 ## Required views — section 12
 
 | View | Required content |
