@@ -37,3 +37,13 @@ freeze and result-embargo eligibility can be resolved, even MEASURED exports pro
 descriptive output with an explicit inference-unavailable reason. The separate pure
 task-cluster helper implements the planned bootstrap and repeat-0 summaries for a
 future eligible caller; calling it does not establish admission or acceptance.
+
+`calculate_task_statistics` consumes normalized primary task cells, refusing
+non-primary arm/class/repeat shapes and incomplete 36/48 balanced designs. It
+returns conditional calculations only; canonical admission, growth and release
+eligibility must be established before any research presentation. It refuses
+SIMULATED inference. `summarize_trajectory` consumes rot's explicit documented
+checkpoint input and produces twelve chart points with per-checkpoint denominator
+four; a point is null if any observation is unknown. Its fixed48 trajectory area
+and feature-completion records remain separate. Neither helper guesses producer
+wire fields. Unpriced reported costs stay distinct from dated-price known subtotals.

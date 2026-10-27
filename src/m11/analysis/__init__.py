@@ -8,6 +8,8 @@ from typing import Any
 
 from .statistics import task_cluster_comparison
 from .comparisons import descriptive_comparisons
+from .design import calculate_task_statistics
+from .trajectories import summarize_trajectory
 
 
 class ExportValidationError(ValueError):
@@ -130,6 +132,7 @@ def analyze_export(payload: Any) -> dict:
     for (harness, arm, task_class), rows in sorted(group_rows.items(), key=lambda item: str(item[0])):
         members = [attempt for row in rows for attempt in by_cell[row["cell_id"]]]
         known = Decimal(0)
+        unpriced_reported = Decimal(0)
         failure_cost = Decimal(0)
         unknown_costs = 0
         for attempt in members:
@@ -137,10 +140,12 @@ def analyze_export(payload: Any) -> dict:
             value = _money(cost.get("estimated_usd")) if cost else None
             if value is None or cost.get("coverage") != "complete" or not cost.get("pricetable_sha256") or attempt.get("usage_coverage") != "complete":
                 unknown_costs += 1
-            if value is not None:
+            if value is not None and cost.get("pricetable_sha256"):
                 known += value
                 if any(row["cell_id"] == attempt["cell_id"] and row["disposition"] == "fail" for row in rows):
                     failure_cost += value
+            elif value is not None:
+                unpriced_reported += value
         counts = {name: sum(row["disposition"] == name for row in rows) for name in ("pass", "fail", "evaluator_error", "infra_excluded", "unknown", "unstarted")}
         missing = counts["evaluator_error"] + counts["infra_excluded"] + counts["unknown"] + counts["unstarted"]
         solved_tasks = {row["task_id"] for row in rows if row["disposition"] == "pass"}
@@ -148,11 +153,14 @@ def analyze_export(payload: Any) -> dict:
         groups.append({
             "harness_id": harness, "treatment_id": arm, "task_class": task_class,
             "planned": len(rows), "started": sum(a.get("started_at") is not None for a in members),
+            "started_slots": sum(any(a.get("started_at") is not None for a in by_cell[row["cell_id"]]) for row in rows),
+            "processes_completed": sum(a.get("ended_at") is not None and a.get("process_state") == "exited" for a in members),
             "attempts": len(members), "counts": counts, "judged_coverage": (counts["pass"] + counts["fail"]) / len(rows),
             "distinct_tasks_solved": len(solved_tasks), "solved_task_ids": sorted(solved_tasks),
             "success_over_planned": counts["pass"] / len(rows),
             "missingness_bounds": [counts["pass"] / len(rows), (counts["pass"] + missing) / len(rows)],
             "known_estimated_subtotal_usd": str(known), "unknown_cost_attempts": unknown_costs,
+            "unpriced_reported_subtotal_usd": str(unpriced_reported),
             "known_failure_estimated_subtotal_usd": str(failure_cost),
             "usage_cost_coverage": (len(members) - unknown_costs) / len(members) if members else None,
             "cost_per_pass_usd": None if economic_reason else str(known / counts["pass"]),
@@ -180,4 +188,4 @@ def analyze_export(payload: Any) -> dict:
     }
 
 
-__all__ = ["analyze_export", "ExportValidationError", "task_cluster_comparison"]
+__all__ = ["analyze_export", "ExportValidationError", "task_cluster_comparison", "calculate_task_statistics", "summarize_trajectory"]
