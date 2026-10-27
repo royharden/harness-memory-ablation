@@ -96,6 +96,7 @@ def task_cluster_comparison(
     degenerate = min(effects) == max(effects)
     ratio, ratio_reason = economics(flattened)
     undefined = draws - len(ratios)
+    ratio_degenerate = bool(ratios) and min(ratios) == max(ratios)
     repeat_zero = [row for row in flattened]
     left_only = sum(row["left"][0] and not row["right"][0] for row in repeat_zero)
     right_only = sum(row["right"][0] and not row["left"][0] for row in repeat_zero)
@@ -110,6 +111,6 @@ def task_cluster_comparison(
         "repeat0_mcnemar": mcnemar_exact(left_only, right_only),
         "estimated_cost_ratio": ratio, "cost_ratio_reason": ratio_reason,
         "undefined_ratio_draw_mass": undefined / draws,
-        "cost_ratio_interval": None if undefined else [_quantile(ratios, .025), _quantile(ratios, .975)],
-        "cost_ratio_interval_reason": "undefined_draws" if undefined else None,
+        "cost_ratio_interval": None if undefined or ratio_degenerate else [_quantile(ratios, .025), _quantile(ratios, .975)],
+        "cost_ratio_interval_reason": "undefined_draws" if undefined else "degenerate_bootstrap" if ratio_degenerate else None,
     }

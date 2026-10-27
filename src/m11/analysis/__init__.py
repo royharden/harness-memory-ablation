@@ -7,6 +7,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from .statistics import task_cluster_comparison
+from .comparisons import descriptive_comparisons
 
 
 class ExportValidationError(ValueError):
@@ -159,13 +160,21 @@ def analyze_export(payload: Any) -> dict:
             "cost_per_pass_reason": economic_reason, "price_label": "estimated at dated list prices",
         })
     missing = sum(row["disposition"] not in ("pass", "fail") for row in outcomes)
+    # Comparison-arm uncertainty suppresses both economic arms, including class
+    # companions; never leave a complete-case cost headline on the other side.
+    for group in groups:
+        peers = [other for other in groups if other["harness_id"] == group["harness_id"] and other["task_class"] == group["task_class"]]
+        if any(other["unknown_cost_attempts"] for other in peers):
+            group["cost_per_pass_usd"] = None
+            group["cost_per_distinct_task_usd"] = None
+            group["cost_per_pass_reason"] = "comparison_arm_unknown_cost"
     reasons = ["simulated_no_inference"] if mode == "SIMULATED" else ["admission_freeze_and_embargo_metadata_unavailable"]
     return {
         "schema_version": "m11-analysis/1", "campaign_id": export["campaign_id"], "mode": mode,
         "experiment_kind": export["experiment_kind"], "construction_status": "runtime-unverified",
         "status": "INCOMPLETE" if missing else "DESCRIPTIVE_ONLY",
         "unavailable_reasons": reasons, "planned_cells": outcomes, "attempts": export["attempts"],
-        "groups": groups, "comparisons": [], "trajectories": export["trajectory_checkpoints"],
+        "groups": groups, "comparisons": descriptive_comparisons(outcomes), "trajectories": export["trajectory_checkpoints"],
         "limitations": export["limitations"], "provenance": export,
         "inferential_claim": None, "independent_worksheets": "PENDING",
     }
