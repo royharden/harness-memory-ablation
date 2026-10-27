@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-10-F1",
+    "type": "decision",
+    "status": "current",
+    "provenance": "synthetic project choice R41",
+    "date": "2026-10-27",
+    "value": "TIE_FIRST: among equal greatest revisions retain the first encountered record."
+  }
+]

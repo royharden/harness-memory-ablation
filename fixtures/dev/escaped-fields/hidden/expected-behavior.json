@@ -1,0 +1,45 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": "",
+      "expected": [
+        ""
+      ]
+    },
+    {
+      "input": "a|",
+      "expected": [
+        "a",
+        ""
+      ]
+    },
+    {
+      "input": "a\\|b|c",
+      "expected": [
+        "a|b",
+        "c"
+      ]
+    },
+    {
+      "input": "x\\\\|y",
+      "expected": [
+        "x\\",
+        "y"
+      ]
+    },
+    {
+      "input": "||",
+      "expected": [
+        "",
+        "",
+        ""
+      ]
+    }
+  ],
+  "invalid_inputs": [
+    "a\\"
+  ]
+}

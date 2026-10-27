@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-16-F1",
+    "type": "convention",
+    "status": "stale",
+    "provenance": "archived checksum draft C0; current weighted contract supersedes it",
+    "date": "2026-10-27",
+    "value": "Use an unweighted sum modulo 256."
+  }
+]

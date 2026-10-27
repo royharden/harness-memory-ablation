@@ -1,0 +1,30 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": " A B ",
+      "expected": "a.b"
+    },
+    {
+      "input": "Hello\tWORLD\nNow",
+      "expected": "hello.world.now"
+    },
+    {
+      "input": "",
+      "expected": ""
+    },
+    {
+      "input": "\u00c9COLE X",
+      "expected": "\u00e9cole.x"
+    },
+    {
+      "input": "a-b c",
+      "expected": "a-b.c"
+    }
+  ],
+  "invalid_inputs": [
+    1
+  ]
+}

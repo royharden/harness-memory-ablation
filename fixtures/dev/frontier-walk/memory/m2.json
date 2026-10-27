@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-08-F1",
+    "type": "decision",
+    "status": "current",
+    "provenance": "synthetic project choice F28",
+    "date": "2026-10-27",
+    "value": "NEIGHBOR_DESCENDING: sort newly considered neighbors in descending lexical order."
+  }
+]

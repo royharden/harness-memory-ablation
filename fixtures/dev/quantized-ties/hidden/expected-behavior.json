@@ -1,0 +1,54 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": {
+        "values": [
+          5,
+          -5,
+          15,
+          -15
+        ],
+        "step": 10
+      },
+      "expected": [
+        10,
+        0,
+        20,
+        -10
+      ]
+    },
+    {
+      "input": {
+        "values": [
+          1,
+          9,
+          -9
+        ],
+        "step": 10
+      },
+      "expected": [
+        0,
+        10,
+        -10
+      ]
+    },
+    {
+      "input": {
+        "values": [],
+        "step": 3
+      },
+      "expected": []
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "values": [
+        1
+      ],
+      "step": 0
+    }
+  ]
+}

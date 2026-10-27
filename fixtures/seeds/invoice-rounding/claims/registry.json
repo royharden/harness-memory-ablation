@@ -1,0 +1,46 @@
+{
+  "schema_version": "m11-dev-claims/1",
+  "execution_status": "NOT_RUN",
+  "claims": [
+    {
+      "id": "invoice-rounding-C1",
+      "assertion": "Unit prices multiply by quantity before half-up cent rounding.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-invoice-rounding-C1"
+      },
+      "check_path": "claims/check_C1.py",
+      "check_callable": "test_claim_C1"
+    },
+    {
+      "id": "invoice-rounding-C2",
+      "assertion": "An empty invoice totals zero.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-invoice-rounding-C2"
+      },
+      "check_path": "claims/check_C2.py",
+      "check_callable": "test_claim_C2"
+    },
+    {
+      "id": "invoice-rounding-C3",
+      "assertion": "Negative prices are rejected.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-invoice-rounding-C3"
+      },
+      "check_path": "claims/check_C3.py",
+      "check_callable": "test_claim_C3"
+    },
+    {
+      "id": "invoice-rounding-C4",
+      "assertion": "Signed integer cent formatting always emits two decimal digits.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-invoice-rounding-C4"
+      },
+      "check_path": "claims/check_C4.py",
+      "check_callable": "test_claim_C4"
+    }
+  ]
+}

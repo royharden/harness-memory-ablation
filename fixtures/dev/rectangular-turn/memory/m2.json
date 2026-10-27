@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-17-F1",
+    "type": "decision",
+    "status": "decoy",
+    "provenance": "unadopted matrix display sketch M0; current task specifies rotation",
+    "date": "2026-10-27",
+    "value": "Transpose rows and columns without reversing either axis."
+  }
+]

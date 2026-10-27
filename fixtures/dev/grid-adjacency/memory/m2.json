@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-11-F1",
+    "type": "decision",
+    "status": "current",
+    "provenance": "synthetic project choice G52",
+    "date": "2026-10-27",
+    "value": "DIRECTION_WNES: examine west, north, east, south in that order."
+  }
+]

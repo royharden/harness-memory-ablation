@@ -1,0 +1,1092 @@
+{
+  "schema_version": "m11-dev-seeds/1",
+  "split": "dev",
+  "author_session": "01a17fb8-9afd-7010-80d0-4482a438ecb4",
+  "author_callsign": "0986_Codex_gpt-61-sol_Sub_M11DevSeeds",
+  "independence": "builder_lineage",
+  "rights": "private_only_pending_review",
+  "execution_status": "NOT_RUN",
+  "split_seed": 11027,
+  "seeds": [
+    {
+      "id": "invoice-rounding",
+      "path": "invoice-rounding",
+      "baseline_paths": [
+        "baseline/money.py",
+        "baseline/invoice.py",
+        "baseline/README.md"
+      ],
+      "tripwire_ids": [
+        "invoice-rounding-B1",
+        "invoice-rounding-B2",
+        "invoice-rounding-B3",
+        "invoice-rounding-B4"
+      ],
+      "tripwire_paths": [
+        "tripwires/test_B1.py",
+        "tripwires/test_B2.py",
+        "tripwires/test_B3.py",
+        "tripwires/test_B4.py"
+      ],
+      "claim_ids": [
+        "invoice-rounding-C1",
+        "invoice-rounding-C2",
+        "invoice-rounding-C3",
+        "invoice-rounding-C4"
+      ],
+      "claim_registry_path": "claims/registry.json",
+      "checkpoints": [
+        {
+          "ordinal": 1,
+          "feature_path": "features/01.md",
+          "reference_paths": [
+            "references/01/money.py",
+            "references/01/invoice.py",
+            "references/01/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 2,
+          "feature_path": "features/02.md",
+          "reference_paths": [
+            "references/02/money.py",
+            "references/02/invoice.py",
+            "references/02/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 3,
+          "feature_path": "features/03.md",
+          "reference_paths": [
+            "references/03/money.py",
+            "references/03/invoice.py",
+            "references/03/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 4,
+          "feature_path": "features/04.md",
+          "reference_paths": [
+            "references/04/money.py",
+            "references/04/invoice.py",
+            "references/04/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 5,
+          "feature_path": "features/05.md",
+          "reference_paths": [
+            "references/05/money.py",
+            "references/05/invoice.py",
+            "references/05/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 6,
+          "feature_path": "features/06.md",
+          "reference_paths": [
+            "references/06/money.py",
+            "references/06/invoice.py",
+            "references/06/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 7,
+          "feature_path": "features/07.md",
+          "reference_paths": [
+            "references/07/money.py",
+            "references/07/invoice.py",
+            "references/07/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 8,
+          "feature_path": "features/08.md",
+          "reference_paths": [
+            "references/08/money.py",
+            "references/08/invoice.py",
+            "references/08/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 9,
+          "feature_path": "features/09.md",
+          "reference_paths": [
+            "references/09/money.py",
+            "references/09/invoice.py",
+            "references/09/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 10,
+          "feature_path": "features/10.md",
+          "reference_paths": [
+            "references/10/money.py",
+            "references/10/invoice.py",
+            "references/10/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 11,
+          "feature_path": "features/11.md",
+          "reference_paths": [
+            "references/11/money.py",
+            "references/11/invoice.py",
+            "references/11/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py",
+            "visible_tests/test_11.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 12,
+          "feature_path": "features/12.md",
+          "reference_paths": [
+            "references/12/money.py",
+            "references/12/invoice.py",
+            "references/12/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py",
+            "visible_tests/test_11.py",
+            "visible_tests/test_12.py"
+          ],
+          "claim_expectations": {
+            "invoice-rounding-C1": true,
+            "invoice-rounding-C2": true,
+            "invoice-rounding-C3": true,
+            "invoice-rounding-C4": true
+          },
+          "source_anchor": {
+            "invoice-rounding-C1": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C1"
+            },
+            "invoice-rounding-C2": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C2"
+            },
+            "invoice-rounding-C3": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C3"
+            },
+            "invoice-rounding-C4": {
+              "path": "README.md",
+              "anchor": "claim-invoice-rounding-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        }
+      ]
+    },
+    {
+      "id": "inventory-reservation",
+      "path": "inventory-reservation",
+      "baseline_paths": [
+        "baseline/stock.py",
+        "baseline/reservations.py",
+        "baseline/README.md"
+      ],
+      "tripwire_ids": [
+        "inventory-reservation-B1",
+        "inventory-reservation-B2",
+        "inventory-reservation-B3",
+        "inventory-reservation-B4"
+      ],
+      "tripwire_paths": [
+        "tripwires/test_B1.py",
+        "tripwires/test_B2.py",
+        "tripwires/test_B3.py",
+        "tripwires/test_B4.py"
+      ],
+      "claim_ids": [
+        "inventory-reservation-C1",
+        "inventory-reservation-C2",
+        "inventory-reservation-C3",
+        "inventory-reservation-C4"
+      ],
+      "claim_registry_path": "claims/registry.json",
+      "checkpoints": [
+        {
+          "ordinal": 1,
+          "feature_path": "features/01.md",
+          "reference_paths": [
+            "references/01/stock.py",
+            "references/01/reservations.py",
+            "references/01/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 2,
+          "feature_path": "features/02.md",
+          "reference_paths": [
+            "references/02/stock.py",
+            "references/02/reservations.py",
+            "references/02/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 3,
+          "feature_path": "features/03.md",
+          "reference_paths": [
+            "references/03/stock.py",
+            "references/03/reservations.py",
+            "references/03/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 4,
+          "feature_path": "features/04.md",
+          "reference_paths": [
+            "references/04/stock.py",
+            "references/04/reservations.py",
+            "references/04/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 5,
+          "feature_path": "features/05.md",
+          "reference_paths": [
+            "references/05/stock.py",
+            "references/05/reservations.py",
+            "references/05/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 6,
+          "feature_path": "features/06.md",
+          "reference_paths": [
+            "references/06/stock.py",
+            "references/06/reservations.py",
+            "references/06/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 7,
+          "feature_path": "features/07.md",
+          "reference_paths": [
+            "references/07/stock.py",
+            "references/07/reservations.py",
+            "references/07/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 8,
+          "feature_path": "features/08.md",
+          "reference_paths": [
+            "references/08/stock.py",
+            "references/08/reservations.py",
+            "references/08/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 9,
+          "feature_path": "features/09.md",
+          "reference_paths": [
+            "references/09/stock.py",
+            "references/09/reservations.py",
+            "references/09/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 10,
+          "feature_path": "features/10.md",
+          "reference_paths": [
+            "references/10/stock.py",
+            "references/10/reservations.py",
+            "references/10/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 11,
+          "feature_path": "features/11.md",
+          "reference_paths": [
+            "references/11/stock.py",
+            "references/11/reservations.py",
+            "references/11/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py",
+            "visible_tests/test_11.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        },
+        {
+          "ordinal": 12,
+          "feature_path": "features/12.md",
+          "reference_paths": [
+            "references/12/stock.py",
+            "references/12/reservations.py",
+            "references/12/README.md"
+          ],
+          "visible_test_paths": [
+            "visible_tests/test_01.py",
+            "visible_tests/test_02.py",
+            "visible_tests/test_03.py",
+            "visible_tests/test_04.py",
+            "visible_tests/test_05.py",
+            "visible_tests/test_06.py",
+            "visible_tests/test_07.py",
+            "visible_tests/test_08.py",
+            "visible_tests/test_09.py",
+            "visible_tests/test_10.py",
+            "visible_tests/test_11.py",
+            "visible_tests/test_12.py"
+          ],
+          "claim_expectations": {
+            "inventory-reservation-C1": true,
+            "inventory-reservation-C2": true,
+            "inventory-reservation-C3": true,
+            "inventory-reservation-C4": true
+          },
+          "source_anchor": {
+            "inventory-reservation-C1": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C1"
+            },
+            "inventory-reservation-C2": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C2"
+            },
+            "inventory-reservation-C3": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C3"
+            },
+            "inventory-reservation-C4": {
+              "path": "README.md",
+              "anchor": "claim-inventory-reservation-C4"
+            }
+          },
+          "execution_status": "NOT_RUN"
+        }
+      ]
+    }
+  ]
+}
