@@ -45,6 +45,21 @@ def _read_export(path: Path) -> dict:
     return payload
 
 
+def _canonical_analysis_payload(path: Path) -> dict:
+    """Resolve the canonical producer before handing JSON data to analysis.
+
+    PublicExport owns its closed nested registration/suite/eligibility records.
+    JSON-mode dumping is intentional: DL4's declared API consumes a public JSON
+    payload and must parse it through the same producer's JSON-aware parser.
+    No Python model_validate(dict) shortcut may reinterpret strict tuple fields.
+    """
+    campaign = importlib.import_module("m11.campaign")
+    export = campaign.parse_export(_read_export(path))
+    if not isinstance(export, campaign.PublicExport):
+        raise ContractError("canonical parser did not return PublicExport")
+    return export.model_dump(mode="json")
+
+
 def _refusal(command: str, reason: str) -> int:
     print(json.dumps({"status": "refused", "command": command,
         "reason": reason, "runtime_verified": False, "p0": "PENDING"}), file=sys.stderr)
@@ -66,7 +81,7 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(build_demo(), ensure_ascii=False, sort_keys=True, allow_nan=False))
             return 0
         analysis = importlib.import_module("m11.analysis")
-        result = analysis.analyze_export(_read_export(args.input))
+        result = analysis.analyze_export(_canonical_analysis_payload(args.input))
         if args.command == "analyze":
             print(json.dumps(result, ensure_ascii=False, sort_keys=True, allow_nan=False))
         else:
