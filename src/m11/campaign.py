@@ -536,4 +536,20 @@ def parse_export(payload: str | bytes | dict[str, Any]) -> PublicExport:
     """Validate closed records and cross-references; no code, grader or I/O runs."""
     raw = canonical_json_bytes(payload) if isinstance(payload, dict) else payload.encode("utf-8") if isinstance(payload, str) else payload
     decoded = strict_json(raw)
+    if not isinstance(decoded, dict):
+        raise ValueError("public export must be an object")
+    # Shared constructors have Python defaults for these literals. Embedded
+    # wire records still must state them explicitly, as parse_record requires.
+    record_types = {
+        "attempts": "AttemptRecord", "grades": "GradeResult",
+        "usage_observations": "UsageObservation", "model_evidence": "ModelEvidence",
+        "limitations": "Limitation",
+    }
+    for collection, record_type in record_types.items():
+        records = decoded.get(collection)
+        if not isinstance(records, list):
+            raise ValueError("required shared record array missing")
+        for record in records:
+            if not isinstance(record, dict) or record.get("schema_version") != "harnessrun/1" or record.get("record_type") != record_type:
+                raise ValueError("embedded shared record requires explicit version/type")
     return PublicExport.model_validate_json(canonical_json_bytes(decoded))
