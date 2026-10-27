@@ -17,10 +17,10 @@ FIELDS = {
     "expected_answers_ref", "attestation_ref", "adversarial_session",
     "adversarial_lineage", "items", "checks", "source_hashes", "seal_ref",
     "exposure_state", "custodian_signature_ref", "human_signature_ref",
-    "execution", "adversarial_coverage",
+    "execution", "adversarial_coverage", "run_ids",
 }
 COMMON_CHECKS = {"rights_semantic", "family_disjoint", "isolation",
-                 "stability_1", "stability_2", "stability_3"}
+                 "stability"}
 REQUIRED_CHECKS = {
     "task": COMMON_CHECKS | {"oracle", "untouched", "wrong_1", "wrong_2",
                               "wrong_3", "null_zero", "leakage"},
@@ -51,6 +51,7 @@ class GateContext:
     kit_sha256: str | None = None
     config_sha256: str | None = None
     image_sha256: str | None = None
+    python_version: str | None = None
 
 
 @dataclass(frozen=True)
@@ -156,29 +157,27 @@ def _verify_checks(receipt: dict[str, Any], items: dict[str, dict[str, Any]],
                    root: Path) -> None:
     if not isinstance(receipt["checks"], list):
         raise Refusal("checks must be a list")
-    expected = {(item_id, check) for item_id, item in items.items()
-                for check in (REQUIRED_CHECKS[item["kind"]] | set(item["wrong_patch_ids"]))}
-    seen: set[tuple[str, str]] = set()
-    stability_runs: dict[str, set[str]] = {}
+    run_ids = strings(receipt["run_ids"], "operator rerun IDs")
+    if len(run_ids) != 3:
+        raise Refusal("exactly three distinct keyless reruns required")
+    expected = {(item_id, check, run_id) for item_id, item in items.items()
+                for check in (REQUIRED_CHECKS[item["kind"]] | set(item["wrong_patch_ids"]))
+                for run_id in run_ids}
+    seen: set[tuple[str, str, str]] = set()
     for check in receipt["checks"]:
         closed(check, {"item_id", "check", "outcome", "run_id",
                        "evidence_path", "evidence_sha256"}, "check")
-        pair = (text(check["item_id"], "check item"), text(check["check"], "check name"))
-        if pair not in expected or pair in seen:
-            raise Refusal("unexpected or duplicate check")
+        key = (text(check["item_id"], "check item"),
+               text(check["check"], "check name"), text(check["run_id"], "check run"))
+        if key not in expected or key in seen:
+            raise Refusal("unexpected or duplicate item/control/rerun")
         if check["outcome"] != "pass":
             raise Refusal("required control did not pass")
-        run_id = text(check["run_id"], "check run")
-        if pair[1].startswith("stability_"):
-            stability_runs.setdefault(pair[0], set()).add(run_id)
         read_bound(root, text(check["evidence_path"], "check evidence"),
                    digest(check["evidence_sha256"], "check evidence hash"))
-        seen.add(pair)
+        seen.add(key)
     if seen != expected:
-        raise Refusal("required per-item evidence missing")
-    if any(len(stability_runs.get(item_id, set())) != 3 for item_id in items):
-        raise Refusal("stability requires three distinct reruns")
-
+        raise Refusal("required per-item per-rerun control evidence missing")
 
 def _verify_execution(receipt: dict[str, Any], context: GateContext, root: Path,
                       items: dict[str, dict[str, Any]]) -> None:
@@ -192,6 +191,8 @@ def _verify_execution(receipt: dict[str, Any], context: GateContext, root: Path,
         if digest(execution[name], name) != digest(getattr(context, name), "pinned " + name):
             raise Refusal("operator execution pins differ")
     version = text(execution["python_version"], "Python version")
+    if version != text(context.python_version, "pinned Python patch version"):
+        raise Refusal("operator Python patch version differs")
     pieces = version.split(".")
     if len(pieces) != 3 or pieces[:2] != ["3", "12"] or not pieces[2].isdigit():
         raise Refusal("approved Python3.12 patch version required")

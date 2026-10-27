@@ -38,7 +38,7 @@ valid deployment. Missing verifier/appointment/builder registry refuses admissio
 Receipt schema_version=m11-admission/1 is closed. See evaluation/admission.py FIELDS,
 REQUIRED_CHECKS and _items for the single source definition. It separates P0 and
 full_pack, enforces class/count/reference/diagnostic/human-audit coverage, distinct
-adversarial lineage and three distinct stability runs per item. The operator session, kit/config/image hashes
+adversarial lineage and complete per-item/control coverage in each of three distinct explicit run IDs. The operator session, kit/config/image hashes
 and exact Python3.12 patch version must match trusted operator context; each unique
 item grader hash needs separate adversarial-session evidence coverage. Receipt hash is
 outside the finalized receipt bytes, avoiding self-reference. No sample filled

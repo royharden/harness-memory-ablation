@@ -89,6 +89,15 @@ def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
                   "hidden_grader_mount", "disposition"}, "grade plan")
     if plan["schema_version"] != "m11-grade-plan/1":
         raise Refusal("unknown grade plan")
+    for field in ("attempt_id", "opaque_task_id"):
+        text(plan[field], field)
+    for field in ("artifact_sha256", "grader_sha256", "suite_sha256",
+                  "offline_image_sha256", "isolation_evidence_sha256"):
+        digest(plan[field], field)
+    fixed = {"network": "disabled", "candidate_mount": "immutable_read_only",
+             "hidden_grader_mount": "grader_only", "disposition": "PLAN_ONLY_NOT_EXECUTED"}
+    if any(plan[field] != value for field, value in fixed.items()):
+        raise Refusal("offline grade plan isolation/disposition differs")
     fields = {"attempt_id", "artifact_sha256", "opaque_task_id", "grader_sha256",
               "verdict", "receipt_ref", "receipt_sha256"}
     closed(observation, fields, "external grade")
