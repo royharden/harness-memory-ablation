@@ -21,7 +21,7 @@ must never import the candidate. Grader integrity, self-checks, error classifica
 process isolation and independent data admission remain separate obligations.
 
 `memory/facts.json` is trusted authoring input. M1 prose and M2 JSON repeat the six fact
-fields and content. Neutral whitespace equalizes UTF-8 byte lengths. Native token counts,
+fields and content. Neutral whitespace keeps UTF-8 byte lengths within the plan tolerance; exact bytes depend on checkout line endings. Native token counts,
 native loading and semantic equality have NOT been verified. Treatment preparation alone
 selects M1 or M2 and supplies the future native memory file; M0 supplies neither file.
 No memory is part of `visible_paths` before treatment preparation.

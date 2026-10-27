@@ -69,7 +69,7 @@ def quote(lines, discount=0, tax_basis_points=0):
 
 def encode_lines(lines):
     import json
-    return json.dumps({'version': 1, 'lines': [[str(decimal(p)), q] for p, q in validate_lines(lines)]}, sort_keys=True, separators=(',', ':'))
+    return json.dumps({'version': 1, 'lines': [[str(p), q] for p, q in validate_lines(lines)]}, sort_keys=True, separators=(',', ':'))
 
 
 def decode_lines(text):

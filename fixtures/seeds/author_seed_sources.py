@@ -190,7 +190,7 @@ INV = [
 ''', "assert quote([('1.00', 2)], 50, 1000) == {'subtotal': 200, 'discount': 50, 'tax': 15, 'total': 165}"),
 ('Add encode_lines/decode_lines pure JSON format version1; preserve exact decimal text and order; reject unsupported versions.', '''def encode_lines(lines):
     import json
-    return json.dumps({'version': 1, 'lines': [[str(decimal(p)), q] for p, q in validate_lines(lines)]}, sort_keys=True, separators=(',', ':'))
+    return json.dumps({'version': 1, 'lines': [[str(p), q] for p, q in validate_lines(lines)]}, sort_keys=True, separators=(',', ':'))
 
 
 def decode_lines(text):
@@ -199,7 +199,7 @@ def decode_lines(text):
     if type(data) is not dict or set(data) != {'version', 'lines'} or type(data['version']) is not int or data['version'] != 1:
         raise ValueError("unsupported invoice format")
     return validate_lines(data['lines'])
-''', "assert decode_lines(encode_lines([('1.005', 2)])) == (['1.005', 2],)"),
+''', "assert decode_lines(encode_lines([('1.005', 2)])) == (['1.005', 2],); assert decode_lines(encode_lines([('001.00', 2), ('1e2', 1)])) == (['001.00', 2], ['1e2', 1])"),
 ('Add quote_batch(requests) accepting dictionaries with lines and optional quote options; preserve input order.', '''def quote_batch(requests):
     return tuple(quote(**request) for request in requests)
 ''', "assert [r['total'] for r in quote_batch([{'lines': [('1', 1)]}, {'lines': []}])] == [100, 0]"),
@@ -432,4 +432,3 @@ paths = list(ROOT.rglob('*.py'))
 for path in paths:
     ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
 print(json.dumps({'author_session': SESSION, 'seeds': len(manifest['seeds']), 'full_reference_snapshots': sum(len(s['checkpoints']) for s in manifest['seeds']), 'syntax_parsed_python_files': len(paths), 'execution_status': 'NOT_RUN'}))
-
