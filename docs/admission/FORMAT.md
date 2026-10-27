@@ -185,6 +185,68 @@ reports only permitted counts/checks/opaque IDs. Any exposure invalidates confir
 Retire used held-out material from later confirmation; any later release is manual
 and requires separate approval. Do not silently recycle or release it.
 
+## Accepted producer and consumer mappings
+
+Reconciled against accepted product baseline d6a40177379a5494d65110854b9b403bc22de109.
+The [shared runner contract](../contracts/harnessrun-v1.md),
+[treatment contract](../contracts/treatment-parser.md),
+[frozen schedule](../protocol/preregistration-schedule.md),
+[trajectory protocol](../protocol/longitudinal.md),
+[metrics](../metrics/CONTRACT.md) and [report](../report/CONTRACT.md) retain their
+own semantic purposes. This section maps admission inputs to them; it adds no
+record type, field or enum to the closed harnessrun/1 wire format.
+
+| Admission concept | Accepted producer/consumer binding |
+|---|---|
+| P0/full_pack decision and evidence | External admission envelope referenced by frozen registration corpus/custody and authorization; not GradeResult.verdict, AttemptRecord.status or a new harnessrun record. PASS admits only its declared gate/scope, never a task pass, completed campaign, K/L result or dispatch authorization. |
+| Admitted pack ID/version/digest | Custodian inventory and seal identify the reviewed corpus; AttemptSpec.suite_id/suite_sha256 identify the admitted suite manifest. Bind both through the frozen registration, with manifest roles/hash scope explicit. Pack/seal, suite and individual task hashes are not interchangeable. |
+| Item/family/split/class | Reviewed inventory maps a task ID/hash to suite membership and frozen schedule class/split. AttemptSpec.task_id/task_sha256 carry the visible admitted task binding; family/class/custody evidence remains in the appropriate manifests/registration, not invented runner fields. |
+| Planned task slot | Protocol slot ID corresponds to shared cell_id within the same campaign and experiment; preserve the frozen schedule mapping plus arm/repeat, and all linked attempt/launch IDs. A slot with no attempt is unstarted and must remain reportable; it is never omitted. |
+| Longitudinal seed/checkpoint | Registration/trajectory manifest binds seed/hash, arm and ordered checkpoint to shared task_id/task_sha256, checkpoint and cell_id; GraderPort's opaque_task_id resolves the exact admitted seed/checkpoint/accrued-test mapping in trusted custody. No inference from bare checkpoint number or public task label. |
+| Grading observation | GradeResult binds attempt_id, immutable artifact_sha256, opaque_task_id, grader_sha256 and receipt_ref/receipt_sha256; its pass/fail/evaluator_error enum is a grading outcome, never an admission decision. Resolution must preserve the specific artifact and admitted grader version. |
+| Treatment eligibility | Admission leak/fact/source checks refer to treatment/1 and treatment-equality/1 manifests/receipts; semantic fact-set hash differs from exact treatment-file bytes. M0 absence and M1/M2 equality do not establish native loading or probe compliance. |
+| Public derived result | Analysis/report retain registration/schedule, gate kind/scope, suite/item, attempt/artifact/grade and input hash references plus provenance. They consume eligibility and outcomes; they cannot generate independent admission or infer it from a metric value. |
+
+These are semantic mappings for DL1/DL3 reconciliation, not an assertion that an
+admission schema, registry resolver or export join already exists. In particular,
+the shared closed record set has no admission-envelope variant and no direct
+preregistration field on AttemptSpec. Preserve external frozen-registration/
+schedule bindings; any future additional wire field requires DL1's versioned
+contract decision. Do not silently append fields or claim wire compatibility.
+The seed/checkpoint-to-task mapping also needs an explicit frozen manifest
+definition before implementation; it cannot be inferred from matching names.
+
+Use shared ID/hash conventions when these references enter harnessrun: campaign-
+scoped opaque IDs, exact-byte lowercase SHA256 (directory artifacts use a frozen
+manifest hash), required nullable fields with reasons for unknowns, and references
+that resolve within their declared scope. Missing evidence is not empty data or
+a zero measurement. Receipt digest scope must avoid self-reference; this format
+does not choose serialization or signing mechanics for independent parties.
+
+### Outcome and visibility handoff
+
+Keep admission state, process status, grading verdict, slot disposition and
+measurement provenance separate. A finished process is not a passing grade.
+A refused/unstarted attempt or lost artifact has no fabricated GradeResult:
+retain the planned slot, attempt status/reason and missing grade/artifact coverage.
+A trusted-grader failure may yield evaluator_error; candidate-caused errors stay
+scored failures. The protocol/metrics owner maps observations into exclusive slot
+outcomes while retaining overlapping operational counts and every incurred cost.
+
+Intake emits only permitted opaque IDs, hashes, inventory/check coverage and gate
+references. Hidden grader inputs, oracle/reference code, independent expected
+answers, tripwire/claim expected values and hidden results stay in trusted custody.
+Before frozen final analysis, reports must not reveal embargoed grading outcomes;
+later public redacted exports still require applicable rights/manual approvals.
+An opaque reference, even when hash-resolved, grants no artifact access or release
+right. Keep task, diagnostic and longitudinal populations and SIMULATED/MEASURED
+provenance distinct; source-review receipts are not scientific observations.
+
+For downstream missingness, preserve unknown checkpoints/cells and explicit
+unavailability reasons, never a synthetic zero. Metrics retain their fixed planned
+denominators, tripwire/claim mappings and reference identity without exposing
+private contents. Admission does not define a second rot/statistics algorithm.
+All planned slots remain visible even when no grade or launch exists.
 ## Producer/consumer seams and future acceptance
 
 | Seam | Producer → consumer | Reconciliation owner/trigger |
