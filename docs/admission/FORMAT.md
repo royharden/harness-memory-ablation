@@ -1,0 +1,195 @@
+# Admission and task-pack format specification
+
+Status: format only. P0, full-pack admission, independent appointments and all executed
+checks are PENDING — needs Roy. This document contains no task, answer, grader or receipt.
+It specifies future records; its presence is never admission evidence.
+
+Controlling source: private OUTER planning/promoted/PLAN-M11-v1.md, SHA256
+0126184f9d0ddd2de1f0fe4c9e7fb5c170d5676004c0a023bf8fe63d53c8e99c.
+Section numbers below refer to that immutable plan. The portable format below is a
+scoped interpretation for P1/P6/P10, not an amendment or second plan. A future schema
+must preserve these semantics and reconcile field names with DL1's central contracts.
+
+## Authority and custody (§§4–5)
+
+| Actor | May produce/consume | Boundary |
+|---|---|---|
+| Builder | Dev tasks/seeds after construction grant; public manifests and receipts | No held-out content, P0 answers, independent worksheet, or independent verdict |
+| Independent nonbuilder custodian | P0 sample, held-out pack, independent expected behavior and correct/wrong patches | Must be actually appointed; identity/lineage recorded |
+| Named human semantic/rights reviewer | Reviews every P0 item and rights/semantic records across all items | Detailed audit at least six held-out tasks and all four held-out seeds' tripwires; disclose sampling |
+| Separate custodian-side session | Adversarial check of every trusted grader | Different model lineage preferred; cannot replace human review |
+| Operator | Reruns independent kit; receives sealed visible workspaces directly from custodian | Hidden grader volume inaccessible to agents/builders |
+| Scheduler/grader consumer | Visible task material / opaque task ID and immutable candidate | Adapter does not own grading; hidden feedback never enters later longitudinal sessions |
+
+No builder or builder child becomes an independent custodian/verifier by being renamed.
+The P0 kit is self-contained stdlib/pytest/container material and imports no m11 code.
+No appointments are made by this specification.
+
+## Two distinct admission records (§§4–5,10 P1)
+
+A future receipt must identify its gate as P0 or full_pack. Gate identity cannot be
+inferred from an overall pass flag.
+
+P0 precedes any product scaffold/implementation under the frozen plan. Format-only
+documents may precede it. Required sample: three original tasks, one per class; one
+seed, four tripwires, two reference checkpoints; correct patches, three plausible
+wrong patches per task, and independently authored expected behavior tables.
+Operator reruns in the approved Python 3.12 container. Every oracle passes, untouched
+tasks fail, every wrong patch fails, null score is zero; three keyless reruns are stable.
+Seed baseline and both references pass all active features and tripwires. Provenance,
+rights, signatures, disjointness, mounts/config/grader separation and forbidden-context
+canaries must pass. Any failure, missing appointment/signature or unavailable required
+evidence is NO-GO: report M11 SKIPPED and do not implement. No dev-only downgrade.
+
+Full-pack admission is a separate check of 100% of tasks, diagnostics, seeds and
+references before held-out freeze/opening. It repeats hashes/counts, independent
+authorship, rights/reviewer records, family disjointness, leakage, oracle/untouched/
+wrong/null checks, three-run stability, isolation, baseline/accrued-feature/tripwire/
+claim expectations. P0 never substitutes for it. Frozen-pack failure means SKIPPED in
+execution; there is no dev-only research substitute. Passing either gate does not
+authorize accounts, live calls, spending or publication.
+
+### Receipt envelope
+
+All mandatory evidence must resolve; missing or unverifiable evidence remains pending
+or refuses the gate, never defaults to pass. These are semantic fields, not an approved
+wire schema or signature mechanism.
+
+| Field group | Required meaning |
+|---|---|
+| Gate/binding | gate kind, gate ID, pack ID/version/digest, controlling plan digest, evaluated item scope and expected/observed inventory |
+| Independent manifest | author_session, lineage, reviewer_person, reviewed_at, source_hashes, rights_verdict, semantic_verdict, independent_expected_answers, gate_receipt_hash, signed no-forbidden-source attestation (§4 names retained) |
+| Appointments/review | Custodian appointment reference, human identity and review coverage, separate adversarial-session identity/lineage and coverage |
+| Execution | Operator identity, exact kit/source/config/image/Python pins, rerun IDs, evidence artifacts and per-item outcomes for each required check |
+| Integrity/custody | Exact-byte SHA256 references; seal, visible/hidden separation, access/exposure events, family/split and isolation evidence |
+| Decision | PENDING / NO-GO / PASS for this gate only, unresolved reasons and responsible actor, decision time and evidence references |
+
+independent_expected_answers is a reference to custodian-owned evidence, not answer
+text in a builder-readable receipt. gate_receipt_hash must identify a finalized receipt
+artifact unambiguously; a future serializer must define its hash scope without a
+self-referential digest. Signatures/attestations must bind the reviewed manifest and
+gate evidence; signer identity and verification evidence are required, not a typed
+person's name alone. The concrete signing mechanism awaits the appointed parties.
+Public/build-visible receipts contain counts, IDs, checks and opaque references only;
+no hidden assertions, expected values, patch content or secret locations.
+
+Preserve per-item and per-rerun outcomes; an aggregate pass cannot conceal a missing
+case. Distinguish absent evidence (PENDING), observed failed admission (NO-GO), and
+observed complete pass (PASS). Never emit a PASS receipt from static source review.
+Exposure invalidates confirmation; preserve the event and stop, do not reseal the same
+exposed material as untouched confirmation.
+
+## Pack inventory and roles (§5)
+
+| Split | Tasks and patch inventory | Seeds/references |
+|---|---|---|
+| P0 independent sample | 3 tasks, one/class; correct and 3 wrong/task | 1 seed, 4 tripwires, 2 references |
+| Builder dev after grant | 18 families, 6/class; 18 correct, 54 wrong | 2 dev seeds, 24 checkpoint references |
+| Independent held-out | 36 families, 12/class; 36 correct, 108 wrong | 4 held-out seeds, 48 checkpoint references |
+| Independent diagnostics | 4 families: 2 ceiling, 2 floor; outside primary estimand | No extra seeds specified |
+| Conditional held-out growth | 48 families, 16/class; 48 correct, 144 wrong | No change to four held-out seeds |
+
+Conditional growth is prospective, requires Roy's decision, renewed full admission,
+and complete-stage affordability under the cumulative USD40 ceiling (§§7,9). Do not
+silently shrink counts/repeats/calibration or substitute 36 after growth is triggered.
+Diagnostic patch/check inventory must be explicit in the custodian manifest and
+validated in full; this table invents no extra diagnostic quota absent from §5.
+
+Each item carries opaque item/family IDs, split/class, source hashes, author session/
+lineage, creation-after-adoption provenance, rights/semantic review references, and
+its artifact inventory. Only fresh original standard-library Python microrepositories:
+2–6 modules, roughly 80–400 lines. No client/Gauntlet/partner material, historical
+sessions, third-party benchmark tasks, scraped datasets, model downloads or personal
+canonical skills. Denylist scanning is weak supporting evidence, never originality
+proof. Proposed MIT rights are still Roy's decision, not an asserted licence.
+
+### Task and memory records (§5; P6)
+
+Visible task.md, fixture/ and minimal public tests are separate from hidden/, oracle/
+and wrong/{1,2,3}/. Logical names describe custody partitions, not permission to put
+private data into a product/public tree. Inventory pins each artifact's exact bytes,
+role, owner and exposure scope. The custodian transmits sealed visible workspaces
+directly to the operator scheduler. Builder receives public manifest/receipt only.
+
+Three balanced classes: memory-independent (fully specified); decision-dependent
+(one disclosed synthetic project choice present only in M1/M2, never an answer patch);
+misleading-memory (current task/code refutes explicitly stale/decoy facts).
+Memory fact fields: id, type (decision/convention/gotcha), status (current/stale/decoy),
+provenance, date, value. M1 and M2 retain identical IDs, values, statuses and provenance;
+only representation changes. Neutral ballast keeps byte lengths within ±10%, with
+native token counts recorded separately. M0 has no memory file. Decision token must
+be absent from visible task/fixture. Floor diagnostics require an unknowable constant;
+diagnostics never trigger held-out resampling.
+
+Family separation spans P0/sample, dev, diagnostics and held-out, including parameter
+families. Pin split seed 11027. IDs alone do not establish disjointness: authorship,
+source/family and leak-review evidence are mandatory.
+
+### Seed and checkpoint records (§§5,8; P10)
+
+Dev recipe: invoice-rounding and inventory-reservation libraries. Each seed has 12
+ordered feature requests, four always-valid baseline tripwires, four registered README
+claims with deterministic tests/anchors and expected checkpoint mappings, and a
+reference artifact at every checkpoint. Record seed/split/author/review IDs, baseline
+hash, ordered feature/checkpoint IDs, accrued-test sets, tripwire IDs, claim IDs/anchors,
+reference artifact hashes and custodian-owned expected behavior references.
+
+The P0 sample has its separately specified two references; it is not a shortened
+held-out trajectory. Full dev inventory is 2×12=24 references; held-out is 4×12=48.
+No future feature spec/test/reference is exposed early. Only permitted source/treatment
+tree carries between fresh sessions; archive before/after source/memory hashes and
+invalid writes. No hidden feedback, oracle repair or rollback. A failed candidate
+continues through 12 prescribed sessions unless safety/infrastructure prevents it;
+lost infrastructure tree ends that trajectory with remaining checkpoints unknown.
+
+## Grading and refusal boundary (§§3–8,12)
+
+Future GraderPort.grade consumes an immutable artifact and opaque task ID outside
+adapter custody. Correct patches/behavior tables are independently authored, never
+derived from builder implementation. Required controls apply to every eligible item:
+oracle passes, untouched/null fails with null zero, all wrong patches fail, three
+reruns stable, all seed references/baselines/features/tripwires/claims valid.
+
+Candidate syntax/import/runtime error, invalid patch, crash, timeout and spend/output
+cap after dispatch are scored failures. Missing/tampered grader or failed trusted
+self-check is evaluator_error; infrastructure loss is missing, not model failure.
+Zero-work auth/rate/container failure may be infra_excluded only with proof of no
+tool call/file change. All executed costs remain. Missing slots make primary campaign
+INCOMPLETE; preserve all planned slots, no replacement. These distinctions must not
+be collapsed by admission records or the future grader.
+
+Refuse or retain PENDING on absent appointment/signature/rights/semantic evidence,
+wrong author/lineage, inconsistent scope/count/hash, leakage/family overlap, unstable
+grader, failed oracle/null/wrong control, invalid seed/claim expectation, tampered seal,
+isolation/canary breach, early held-out access, or unverifiable evidence. Identify
+affected opaque IDs and reason without exposing hidden content. A previously passed
+P0 does not cure an invalid full pack. Static format compliance proves none of these
+runtime properties.
+
+## Producer/consumer seams and future acceptance
+
+| Seam | Producer → consumer | Reconciliation owner/trigger |
+|---|---|---|
+| Receipt/ID/status shape | This specification → DL1 central contracts → P1/P6 intake | DL1 with DL2, before any executable schema grant |
+| Independent material | Appointed custodian/human → operator admission → sealed intake | INT/Roy appointments; builders never supply independent answers |
+| Visible workspace and immutable candidate | Scheduler/controller → trusted grader | Future P4/P6 owners; mount/candidate binding verified keylessly |
+| Longitudinal seed/checkpoints | Dev author or custodian → scheduler/rot/report | Future P10/P12/P11 owners; preserve fixed claims/tripwires and unknowns |
+| Gate/campaign status | Operator receipts → prereg/report/authorize | DL3/DL4 and INT; P0/full-pack/K/L never inferred from S review |
+
+Future static acceptance (no execution claimed):
+
+- Confirm P1/P6/P10 fields and counts against §§4–5,8,10; keep conditional growth explicit.
+- Confirm two gate kinds, immutable pack binding, evidence coverage and pending/refusal semantics.
+- Confirm builder-readable manifests expose no hidden text, answers, grader internals or credentials.
+- Confirm author/human/adversarial-session roles, signatures and source/rights records are required.
+- Confirm grading failure vs evaluator/infrastructure unknown stays distinct.
+- Confirm M0 absence, M1/M2 semantic equality, leak checks, family split and all seed mappings.
+- Confirm every consumer has a named reconciliation owner before implementation.
+
+Deferred executed validation: independent P0 appointments/kit/operator reruns; every
+full-pack oracle/untouched/wrong/null and three-run stability check; inventory/hash/
+tamper/signature/rights/lineage refusal cases; task/seed references, tripwires/accrued
+features/claims; split/leakage/isolation/canary proof; sealed intake and hidden custody;
+installed-wheel boundary; synthetic grader outcome checks; and K/L authorization
+validation. These require later grants and actual evidence. Current status remains
+not yet measured, no product/runtime acceptance, no approved spend or live calls.
