@@ -95,6 +95,30 @@ infrastructure missingness and all incurred costs retain their existing protocol
 dispositions. A gate PASS cannot cure incomplete usage/model coverage, release an
 unknown M9 hold, erase a missing slot or complete an incomplete campaign.
 
+## Semantic crosswalks and unavailable executable layouts
+
+The slot/cell, seed/task, ordered-checkpoint and receipt/suite references above
+are semantic crosswalks, as are the registration groups in
+[preregistration and schedule](preregistration-schedule.md) and checkpoint carry
+groups in [longitudinal transitions](longitudinal.md). They are not closed,
+serialized schedule, trajectory, checkpoint or registration records. The accepted
+harnessrun record set has no admission-envelope variant or direct preregistration
+field on AttemptSpec. None is added here.
+
+Exact executable layouts, canonical serialization/hash scopes and resolvers for
+slot-to-cell, seed/feature-to-task, checkpoint before/after hashes and external
+receipt/registration joins remain unavailable until P0-admitted implementation
+under an explicit grant. DL1 owns shared contract/version reconciliation, DL2
+admission/signing semantics and the future protocol owner schedule/trajectory
+layouts. Existing semantic groups describe obligations, not schema compatibility.
+Unresolved joins block the affected derived view or dispatch; retain the planned
+population and missing evidence instead of guessing IDs, hashes or row order.
+
+Keep gate decision separate from campaign disposition: P0 NO-GO requires M11
+SKIPPED and no implementation; full_pack NO-GO requires execution SKIPPED with no
+dev-only research substitute. These are future gate consequences, not a claim
+that a gate ran. Current independent admission, P0/K/L and runtime remain pending.
+
 ## Producer and consumer seams
 
 | Record | Future producer | Future consumer | Reconciliation owner |
