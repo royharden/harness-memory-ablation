@@ -20,11 +20,14 @@ def _parse_export(payload: Any) -> dict:
     # The separate campaign producer owns closed DTOs and hash/reference checks.
     # Never fall back to a permissive local model when that contract is missing.
     try:
-        from m11.campaign import parse_export
+        from m11.campaign import PublicExport, parse_export
     except ImportError as exc:
         raise ExportValidationError("campaign_public_export_contract_unavailable") from exc
     try:
-        return parse_export(payload).model_dump(mode="json")
+        # A canonical DTO from the CLI is explicitly supported, but revalidated
+        # from serialized bytes/fields rather than trusting model_construct.
+        material = payload.model_dump(mode="json") if isinstance(payload, PublicExport) else payload
+        return parse_export(material).model_dump(mode="json")
     except (ValueError, TypeError) as exc:
         raise ExportValidationError("invalid_public_export") from exc
 
