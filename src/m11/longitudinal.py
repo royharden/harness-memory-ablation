@@ -204,7 +204,7 @@ def apply_outcome(state: TrajectoryState, outcome: CheckpointOutcome) -> Traject
         raise ValueError("tripwire mapping differs from frozen plan")
     if current.treatment_id == "L0" and (outcome.memory_before_sha256 is not None or outcome.memory_after_sha256 is not None or outcome.invalid_memory):
         raise ValueError("source-only arm cannot acquire a memory treatment")
-    if current.treatment_id == "L1" and outcome.memory_after_sha256 != outcome.memory_before_sha256 and not outcome.invalid_memory:
+    if current.treatment_id == "L1" and outcome.kind != "workspace_lost" and outcome.memory_after_sha256 != outcome.memory_before_sha256 and not outcome.invalid_memory:
         raise ValueError("static-memory modification must remain archived nonadherence")
     if current.treatment_id != "L0" and outcome.memory_after_sha256 is None and outcome.kind != "workspace_lost" and not outcome.invalid_memory:
         raise ValueError("deleted memory must remain archived nonadherence")

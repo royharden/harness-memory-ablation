@@ -266,8 +266,10 @@ class TrajectoryCheckpoint(ClosedModel):
             raise ValueError("produced checkpoint needs actual attempt and both source hashes")
         if self.treatment_id == "L0" and (self.memory_before_sha256 or self.memory_after_sha256):
             raise ValueError("source-only arm has no memory artifact")
-        if self.status == "produced" and self.treatment_id != "L0" and (not self.memory_before_sha256 or not self.memory_after_sha256) and not self.invalid_memory:
-            raise ValueError("memory treatment must archive before/after hashes, including invalid writes")
+        # A prior archived deletion may leave no before-memory. Recovery can
+        # create valid memory without falsely labelling the new write invalid.
+        if self.status == "produced" and self.treatment_id != "L0" and not self.memory_after_sha256 and not self.invalid_memory:
+            raise ValueError("absent produced memory must remain explicit archived nonadherence")
         if self.status in ("workspace_lost", "unknown", "planned") and (self.feature_verdict != "unknown" or any(t.verdict != "unknown" for t in self.tripwires)):
             raise ValueError("unobserved checkpoint cannot fabricate grader outcomes")
         if (self.feature_verdict != "unknown" or any(t.verdict != "unknown" for t in self.tripwires)) and not self.grade_receipt_sha256:
@@ -496,6 +498,9 @@ class PublicExport(ClosedModel):
                 if attempt.usage_coverage != "complete" or not cost.usage_observation_ids or any(usage[r].coverage != "complete" for r in cost.usage_observation_ids):
                     raise ValueError("complete priced estimate cannot conceal partial/missing usage")
         _unique([f"{c.trajectory_id}:{c.checkpoint}" for c in self.trajectory_checkpoints], "trajectory checkpoint")
+        _unique([c.cell_id for c in self.trajectory_checkpoints], "checkpoint cell")
+        if {c.cell_id for c in self.trajectory_checkpoints} != {c.cell_id for c in self.planned_cells if c.seed_id is not None}:
+            raise ValueError("public checkpoints must retain every planned longitudinal cell, including unknowns")
         trajectory_groups: dict[str, list[PublicCheckpoint]] = {}
         seed_arm_ids: dict[tuple[str, str], str] = {}
         for point in self.trajectory_checkpoints:
@@ -505,6 +510,15 @@ class PublicExport(ClosedModel):
             seed = next((s for s in self.suite.seeds if s.seed_id == point.seed_id), None)
             if seed is None or seed.seed_sha256 != point.seed_sha256:
                 raise ValueError("trajectory seed digest mismatch")
+            if point.attempt_id is not None:
+                attempt = attempts[point.attempt_id]
+                if point.source_after_sha256 is not None and point.source_after_sha256 != attempt.artifact_sha256:
+                    raise ValueError("checkpoint source artifact differs from its exact attempt")
+            observed = point.feature_completed is not None or any(v is not None for v in point.tripwire_outcomes)
+            if observed or point.grade_receipt_sha256 is not None:
+                grade = grades.get(point.attempt_id)
+                if grade is None or grade.receipt_sha256 != point.grade_receipt_sha256 or grade.artifact_sha256 != point.source_after_sha256:
+                    raise ValueError("checkpoint grading receipt/artifact reference is unresolved or mismatched")
             frozen = seed.checkpoints[point.checkpoint - 1]
             if point.tripwire_ids != seed.tripwire_ids or (point.reference_sha256, point.reference_missing_reason) != (frozen.reference_sha256, frozen.reference_missing_reason):
                 raise ValueError("trajectory tripwire/reference mapping differs from frozen seed")
