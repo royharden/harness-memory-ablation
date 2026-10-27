@@ -1,8 +1,10 @@
 # Protocol specification index
 
-Status: format-only specification. No product implementation, data, execution,
-admission or measurement is supplied here. Native work is disabled. P0 and all
-independent, K and L gates remain pending; a USD 40 ceiling authorizes no spend.
+Status: protocol specification with a delegated private [source checkpoint](SOURCE-API.md).
+Source is runtime-unverified; no data admission, execution or measurement is supplied
+here. Native work is disabled. P0 and all independent, K and L gates remain pending;
+a USD 40 ceiling authorizes no spend. The adopted delegated source-construction
+ruling permits source authorship while P0 remains pending, without runtime authority.
 
 The adopted **PLAN-M11-v1.md**, sections 3–9 and packages P3/P8/P12/P14 in section 10,
 controls these documents. It is held in the private coordination shell at
@@ -105,12 +107,13 @@ serialized schedule, trajectory, checkpoint or registration records. The accepte
 harnessrun record set has no admission-envelope variant or direct preregistration
 field on AttemptSpec. None is added here.
 
-Exact executable layouts, canonical serialization/hash scopes and resolvers for
-slot-to-cell, seed/feature-to-task, checkpoint before/after hashes and external
-receipt/registration joins remain unavailable until P0-admitted implementation
-under an explicit grant. DL1 owns shared contract/version reconciliation, DL2
+Source models and metadata resolvers for slot-to-cell, seed/feature-to-task,
+checkpoint before/after hashes and external receipt/registration joins are now
+constructed under the delegated source grant in [SOURCE-API](SOURCE-API.md).
+Their compatibility and runtime behavior remain unexecuted; independent signature
+verification and release eligibility are unavailable. DL1 owns shared contract/version reconciliation, DL2
 admission/signing semantics and the future protocol owner schedule/trajectory
-layouts. Existing semantic groups describe obligations, not schema compatibility.
+layouts. Existing semantic groups describe obligations, not proven schema compatibility.
 Unresolved joins block the affected derived view or dispatch; retain the planned
 population and missing evidence instead of guessing IDs, hashes or row order.
 
