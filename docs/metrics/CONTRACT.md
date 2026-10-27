@@ -55,8 +55,38 @@ safety pause to evaluator faults and other stop gates even when a produced tree
 exists. Infrastructure tree loss ends the trajectory with unknown remaining
 checkpoints; candidate errors continue only while safety/authorization gates allow.
 Before/after hashes and absent source-only memory come from the checkpoint metadata,
-not guessed from an AttemptRecord artifact field. Admission receipt mappings remain
-pending DL2 acceptance; this reconciliation does not invent them.
+not guessed from an AttemptRecord artifact field.
+
+## Admission eligibility and custody
+
+The accepted [admission format](../admission/FORMAT.md) supplies semantic receipt
+groups, not a closed wire schema or observed admission. Bind gate kind/ID, pack
+ID/version/digest, plan digest, evaluated scope/inventory, independent manifest,
+appointments/review, execution pins, integrity/custody and decision references to
+the frozen registration. P0 and full_pack are distinct gates; neither an aggregate
+PASS nor a GradeResult.verdict substitutes for their scoped receipt evidence.
+GradeResult supplies candidate outcome; admission supplies eligibility and trusted
+grader/corpus provenance. Preserve both without merging their status domains.
+
+Before an authorized gate attempt, show PENDING. At an attempted gate, missing or
+unverifiable mandatory evidence or a failed control is NO-GO; only complete observed
+pass evidence supports PASS for that gate. A P0 pass never cures an invalid full pack
+or proves full-pack admission. No admission status grants spending or live dispatch.
+P0 NO-GO requires M11 SKIPPED and no implementation; full_pack NO-GO requires
+execution SKIPPED, with no dev-only research substitute.
+Do not estimate a confirmatory effect from an ineligible pack; preserve permitted
+descriptive records, costs, planned populations and the explicit exclusion reason.
+
+Before held-out opening, require full-pack receipt binding to the frozen runner,
+analysis, treatments, schedule, provider/model/settings, image/CLI/code and budget
+proof, plus applicable authority. Full-pack PASS alone cannot open the pack.
+Hidden results remain unread until frozen final analysis; custodian/operator enforce
+that embargo. Builder-readable intake exposes only permitted counts/checks/opaque IDs,
+never expected answers, hidden assertions or reference patches. Exposure invalidates
+confirmation and stops new work; do not reseal/recycle exposed material as untouched.
+Retirement and any later release remain separate manual decisions. Future wire
+field names/signature/hash scope await DL1/DL2 reconciliation; these semantic joins
+do not claim wire compatibility or independent admission.
 
 ## Task outcomes and missingness — section 7
 

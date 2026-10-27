@@ -67,9 +67,28 @@ Aliases remain recorded in raw_code. Aggregate unavailable reasons such as
 undefined_zero_pass are derived-result reasons, not new harnessrun Limitation codes.
 No synthetic attempt/limitation row is fabricated for an unstarted slot.
 
-Admission-dependent reference layouts remain pending accepted DL2 formats. Until
-then show pending eligibility; do not manufacture a receipt or claim source review
-as admission. These mappings establish documentation compatibility only.
+The accepted [admission format](../admission/FORMAT.md) supplies semantic receipt
+groups. Show gate kind P0/full_pack, pack/scope/digest binding, inventory and opaque
+appointment/review/execution/integrity evidence references, decision and unresolved
+reasons. Preserve admission PENDING/NO-GO/PASS separately from candidate grade,
+campaign completion, Dirty construction disposition and K/L execution status.
+PENDING is pre-attempt; attempted gates with missing/unverifiable required evidence
+are NO-GO. Static format review cannot emit PASS, and P0 is not a full-pack receipt.
+P0 NO-GO reports M11 SKIPPED; full_pack NO-GO reports execution SKIPPED. Preserve
+the scoped gate decision separately; descriptive records do not constitute a
+dev-only research substitute.
+
+Resolve eligibility through the [metrics admission mapping](../metrics/CONTRACT.md#admission-eligibility-and-custody).
+Unresolved receipt bindings block confirmatory presentation; do not hide incurred
+costs or permitted missingness/descriptive records. Receipt semantics are not a new
+harnessrun wire variant; DL1/DL2 own future field/signature/hash-scope reconciliation.
+Do not render hidden results before the custodian/operator's frozen-final-analysis
+release boundary, or expose hidden assertions/answers/patches through receipt links.
+Only permitted counts/checks/opaque IDs enter builder intake. Show exposure events
+as invalidated confirmation, never a repaired pass. Used held-out retirement and
+later public release require their separate decisions. Full-pack PASS does not
+authorize opening, accounts, spend or publication. These mappings establish
+documentation compatibility only; independent admission remains unestablished.
 
 ## Required views — section 12
 
