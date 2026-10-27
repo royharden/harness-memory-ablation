@@ -38,7 +38,9 @@ valid deployment. Missing verifier/appointment/builder registry refuses admissio
 Receipt schema_version=m11-admission/1 is closed. See evaluation/admission.py FIELDS,
 REQUIRED_CHECKS and _items for the single source definition. It separates P0 and
 full_pack, enforces class/count/reference/diagnostic/human-audit coverage, distinct
-adversarial lineage and three distinct stability runs per item. Receipt hash is
+adversarial lineage and three distinct stability runs per item. The operator session, kit/config/image hashes
+and exact Python3.12 patch version must match trusted operator context; each unique
+item grader hash needs separate adversarial-session evidence coverage. Receipt hash is
 outside the finalized receipt bytes, avoiding self-reference. No sample filled
 receipt, signature, oracle or independent expected answer is provided.
 
@@ -58,7 +60,9 @@ prepare_grade requires verified P0, full_pack for heldout, explicit future runti
 authority, isolated-image/evidence digests and frozen opaque-ID/suite/grader mapping.
 It returns a nonexecuted plan only. bind_external_grade requires separately verified
 hash-bound m11-grader-execution/1 evidence with identical attempt/artifact/task/grader
-and image/isolation bindings. The resulting GradeResult uses accepted harnessrun
+and image/isolation, suite and immutable grade-plan bindings. grade_plan_sha256 uses
+UTF-8 sorted-key JSON with compact separators, non-ASCII preserved and nonfinite
+numbers refused, without any self-hash field. The resulting GradeResult uses accepted harnessrun
 fields but does not import its wheel. No grade is fabricated for absent artifacts.
 Model failures versus evaluator/infrastructure missingness stay in the protocol.
 

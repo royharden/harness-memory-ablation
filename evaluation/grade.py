@@ -1,12 +1,13 @@
 """Trusted grader boundary. Plans and binds observations, never imports candidates."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
 from .admission import GateContext, assess_gate
-from .formats import Refusal, closed, digest, parse_json, read_bound, text
+from .formats import Refusal, closed, digest, parse_json, read_bound, sha256, text
 
 
 @dataclass(frozen=True)
@@ -68,6 +69,11 @@ def prepare_grade(request: GradeRequest, *, authority: GradingAuthority,
     }
 
 
+def grade_plan_sha256(plan: dict[str, Any]) -> str:
+    """m11-grade-plan/1 digest over UTF-8 canonical JSON, without a self-hash field."""
+    return sha256(json.dumps(plan, sort_keys=True, separators=(",", ":"),
+                             ensure_ascii=False, allow_nan=False).encode("utf-8"))
+
 def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
                         receipt_root: Path | None = None,
                         receipt_path: str | None = None,
@@ -101,11 +107,15 @@ def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
     receipt = closed(parse_json(raw), {
         "schema_version", "attempt_id", "artifact_sha256", "opaque_task_id",
         "grader_sha256", "verdict", "offline_image_sha256",
-        "isolation_evidence_sha256", "execution_id",
+        "isolation_evidence_sha256", "execution_id", "suite_sha256", "grade_plan_sha256",
     }, "external execution receipt")
     if receipt["schema_version"] != "m11-grader-execution/1":
         raise Refusal("unknown execution evidence")
     text(receipt["execution_id"], "execution ID")
+    if receipt["grade_plan_sha256"] != grade_plan_sha256(plan):
+        raise Refusal("external receipt grade-plan digest differs")
+    if receipt["suite_sha256"] != plan["suite_sha256"]:
+        raise Refusal("external receipt suite differs")
     for field in ("attempt_id", "artifact_sha256", "opaque_task_id",
                   "grader_sha256", "verdict"):
         if receipt[field] != observation[field]:

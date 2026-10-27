@@ -17,6 +17,7 @@ FIELDS = {
     "expected_answers_ref", "attestation_ref", "adversarial_session",
     "adversarial_lineage", "items", "checks", "source_hashes", "seal_ref",
     "exposure_state", "custodian_signature_ref", "human_signature_ref",
+    "execution", "adversarial_coverage",
 }
 COMMON_CHECKS = {"rights_semantic", "family_disjoint", "isolation",
                  "stability_1", "stability_2", "stability_3"}
@@ -46,6 +47,10 @@ class GateContext:
     heldout_task_count: int = 36
     growth_authorization_ref: str | None = None
     verify_signature: Callable[[str, str, str], bool] | None = None
+    operator_session: str | None = None
+    kit_sha256: str | None = None
+    config_sha256: str | None = None
+    image_sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -70,7 +75,8 @@ def _items(receipt: dict[str, Any], task_count: int) -> dict[str, dict[str, Any]
     checkpoints: set[tuple[str, int]] = set()
     for item in receipt["items"]:
         closed(item, {"id", "kind", "task_class", "parent_seed_id", "checkpoint",
-                      "family_id", "diagnostic_kind", "human_detailed", "wrong_patch_ids"}, "item")
+                      "family_id", "diagnostic_kind", "human_detailed", "wrong_patch_ids",
+                      "grader_sha256"}, "item")
         item_id = text(item["id"], "item ID")
         kind = item["kind"]
         if item_id in items or kind not in REQUIRED_CHECKS:
@@ -90,6 +96,7 @@ def _items(receipt: dict[str, Any], task_count: int) -> dict[str, dict[str, Any]
             raise Refusal("unexpected wrong patch inventory")
         if any(not name.startswith("wrong_") for name in wrong_ids):
             raise Refusal("wrong patch control name differs")
+        digest(item["grader_sha256"], "item grader hash")
         family = text(item["family_id"], "family ID")
         if type(item["human_detailed"]) is not bool:
             raise Refusal("human detailed-review flag must be boolean")
@@ -173,6 +180,40 @@ def _verify_checks(receipt: dict[str, Any], items: dict[str, dict[str, Any]],
         raise Refusal("stability requires three distinct reruns")
 
 
+def _verify_execution(receipt: dict[str, Any], context: GateContext, root: Path,
+                      items: dict[str, dict[str, Any]]) -> None:
+    execution = closed(receipt["execution"], {
+        "operator_session", "kit_sha256", "config_sha256", "image_sha256",
+        "python_version", "evidence_path", "evidence_sha256",
+    }, "operator execution")
+    if execution["operator_session"] != text(context.operator_session, "appointed operator"):
+        raise Refusal("operator session differs")
+    for name in ("kit_sha256", "config_sha256", "image_sha256"):
+        if digest(execution[name], name) != digest(getattr(context, name), "pinned " + name):
+            raise Refusal("operator execution pins differ")
+    version = text(execution["python_version"], "Python version")
+    pieces = version.split(".")
+    if len(pieces) != 3 or pieces[:2] != ["3", "12"] or not pieces[2].isdigit():
+        raise Refusal("approved Python3.12 patch version required")
+    read_bound(root, text(execution["evidence_path"], "operator evidence"),
+               digest(execution["evidence_sha256"], "operator evidence hash"))
+    coverage = receipt["adversarial_coverage"]
+    if not isinstance(coverage, list):
+        raise Refusal("adversarial grader coverage absent")
+    required = {item["grader_sha256"] for item in items.values()}
+    seen: set[str] = set()
+    for record in coverage:
+        closed(record, {"grader_sha256", "evidence_path", "evidence_sha256"},
+               "adversarial grader record")
+        grader = digest(record["grader_sha256"], "adversarial grader hash")
+        if grader in seen or grader not in required:
+            raise Refusal("unexpected or duplicate adversarial grader")
+        read_bound(root, text(record["evidence_path"], "adversarial evidence"),
+                   digest(record["evidence_sha256"], "adversarial evidence hash"))
+        seen.add(grader)
+    if seen != required:
+        raise Refusal("not every trusted grader has adversarial evidence")
+
 def assess_gate(raw: bytes | None, *, root: Path | None = None,
                 context: GateContext | None = None) -> GateAssessment:
     """Inspect finalized external evidence; absence of context always refuses PASS.
@@ -238,6 +279,7 @@ def assess_gate(raw: bytes | None, *, root: Path | None = None,
             read_bound(root, text(path, "source path"), digest(expected_hash, "source hash"))
         items = _items(receipt, context.heldout_task_count)
         _verify_checks(receipt, items, root)
+        _verify_execution(receipt, context, root, items)
         return GateAssessment(gate_kind, gate_id, "PASS", (), receipt_hash, pack_hash, len(items))
     except (Refusal, OSError, TypeError, ValueError, KeyError) as exc:
         return GateAssessment(gate_kind, gate_id, "NO-GO", (str(exc),), receipt_hash, pack_hash)
