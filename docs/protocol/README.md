@@ -19,7 +19,49 @@ No external/private absolute paths are needed to consume these formats.
 
 Field names here are semantic requirements for future shared contracts, not a
 second executable schema or invented M9 API. DL1 owns central contract reconciliation.
-All enums and record layouts must be reconciled there before implementation.
+The accepted producer mappings below reconcile the available seams; implementation
+and admission-dependent layouts remain pending.
+
+## Accepted producer mappings
+
+Producer definitions are [harnessrun v1](../contracts/harnessrun-v1.md) and
+[treatment/parser requirements](../contracts/treatment-parser.md). These mappings
+consume those definitions without adding fields or variants to closed records.
+Metric/report consumers are [metrics](../metrics/CONTRACT.md) and
+[reports](../report/CONTRACT.md); this section supplies protocol linkage, not new
+metric formulas. Unknown schema versions, fields, enums or unresolved references
+are invalid rather than permission to extend `harnessrun/1` implicitly.
+
+| Protocol concept | Accepted producer representation and consumer rule |
+|---|---|
+| Planned slot | `AttemptSpec.cell_id` and `AttemptRecord.cell_id` refer to the stable scheduled slot; `campaign_id` scopes it. Preserve the frozen schedule separately so a cell with no attempt remains visible. |
+| Attempt and launch | `attempt_id`, `parent_attempt_id`, `retry_of`; `LaunchSpec.launch_id` and `attempt_spec_sha256`; result `AttemptRecord.attempt_spec_sha256` is required and non-null, while `launch_id` and `launch_spec_sha256` are required nullable fields. Do not create a separate wire Result variant. |
+| Arm and ordering | `AttemptSpec.treatment_id`, zero-based `repeat`, `experiment_kind` and nullable `checkpoint` (1..12 for longitudinal) resolve to the frozen experiment manifest. Task M0/M1/M2 and longitudinal L0/L1/L2 never merge. Schedule ordinal/block/class, trajectory ID and before/after hashes remain protocol metadata keyed to producer IDs, not extra harnessrun fields. |
+| Process versus outcome | `AttemptRecord.status` uses pending/running/finished/timeout/spend_cap/output_cap/crash/refused/cleanup_pending; `process_state` is separate. Scientific pass/fail/evaluator_error comes from `GradeResult.verdict` and protocol missingness evidence. `finished` is not pass, and unstarted cells are not synthetic finished/refused attempts. |
+| Cleanup and missing artifacts | `cleanup_pending` blocks dispatch and overrides the process outcome until resolved; prior stop events retain it. Nullable artifact/launch fields remain null when absent. No GradeResult is fabricated without its required immutable artifact hash; missing infrastructure remains a protocol missing checkpoint/slot. |
+| Mode and lineage | `AttemptSpec.mode` and `AttemptRecord.mode` retain SIMULATED/MEASURED across schedule/attempt/derived-record joins. A scripted outcome cannot satisfy native authority or enter a measured research table. |
+| Exact model | `ProviderConfig.requested_model_id` plus `ModelEvidence` requested/advertised/provider-returned IDs stay distinct; `model_evidence_ids` resolve `model_evidence_id`. `model_coverage` must be complete and every relevant response match before fixed-model wording. A configuration echo cannot supply provider proof. |
+| Usage and prices | `usage_observation_ids` resolve `UsageObservation`; preserve scope/counter_basis, disjoint nullable buckets, usage_source and coverage. `pricetable_sha256` binds the dated price record. Partial/unknown usage or a price gap is unknown cost, never zero or released liability. |
+| Raw usage provenance | `evidence_ref`, `evidence_sha256`, `source_locator` resolve the redacted hash-bound capture and half-open bytes:start:end range, not a HarnessEvent ID. Deduplicate the raw tuple (attempt_id, evidence_sha256, source_locator); a new observation ID cannot bill replay again. Ambiguous cross-capture replay keeps coverage unknown. |
+| Limits and ledger | Use canonical `Limitation.code` plus preserved `raw_code` aliases and evidence; disposition cannot weaken stop gates. `ledger_run_id`/`ledger_reservation_id` resolve actual M9 IDs; other ledger operations remain the existing LedgerPort boundary, not a second monetary total. |
+
+Use producer UTC RFC3339 timestamps, lowercase SHA256 digests, nonnegative finite
+numeric domains and required nullable fields with explicit reasons as defined in
+harnessrun v1. Protocol metadata must not be injected into its closed JSONL records.
+Billing `harness_estimate_usd`, authoritative ledger holds and scope-level billing
+receipts stay separate; the accepted contracts require the same retained unknown
+reservation semantics as [the monetary protocol](authorization-money.md).
+
+Metrics consume the full schedule plus linked attempts, with operational counts
+separate from mutually exclusive scientific dispositions. Infrastructure loss keeps
+the fixed planned denominator and unknown bounds; unknown tripwire cells leave
+point R unavailable. Candidate failures still continue the produced longitudinal
+tree unless a stop gate intervenes. Before/after hash linkage stays in checkpoint
+metadata and never sends hidden feedback or reference artifacts to later agents.
+
+DL2 admission receipt layouts are not yet accepted in this reconciliation. Existing
+protocol admission references remain semantic requirements only; no field shape,
+receipt compatibility, data eligibility or independent gate is inferred here.
 
 ## Producer and consumer seams
 
