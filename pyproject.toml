@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "m11-harness-memory-ablation"
+version = "0.1.0"
+description = "Private, runtime-unverified harness memory research instrument source"
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2.10,<3"]
+
+[project.scripts]
+m11 = "m11.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/m11", "src/harnessrun"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

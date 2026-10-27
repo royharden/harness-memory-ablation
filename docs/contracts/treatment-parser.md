@@ -29,6 +29,13 @@ the nonempty paired M1/M2 files; neutral ballast cannot add instructions or fact
 The shared fact-set hash excludes neutral ballast and representation syntax.
 Hash exact bytes of the treatment files separately from fact semantics.
 
+Source hash scope: `treatment_manifest_hash` hashes canonical manifest JSON with
+`equality_receipt_sha256` set to null. EqualityReceipt binds those two normalized
+manifest hashes. Final manifests then carry SHA256 of the canonical receipt;
+`validate_equality_receipt` checks both directions plus facts/bytes/token fields.
+This explicitly excludes the receipt slot from its own binding cycle. Exact file
+hashes and the finalized manifest's ordinary artifact hash remain distinct.
+
 Task M0 has no memory file, files=[], byte_length=0, no fact-set/equality receipt,
 no injected tokens and no update permission. For that arm fact_set_sha256 is null;
 paired M1/M2 require a fact hash and equality receipt. Native CLAUDE.md/AGENTS.md

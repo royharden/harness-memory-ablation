@@ -1,7 +1,8 @@
 # M11 contract specifications
 
-Status: proposed format specification for P2/P4/P5/P7; no implementation,
-conformance execution, P0 admission, capability verification or measured result.
+Status: format specification for P2/P4/P5/P7 with accompanying runtime-unverified
+source in `src/harnessrun` and `src/m11`. No conformance execution, P0 admission,
+capability verification or measured result.
 All K/L and independent gates remain pending. Dirty Mode permits this source
 review only. These formats do not grant dispatch, spending or publication.
 
