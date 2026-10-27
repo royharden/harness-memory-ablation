@@ -72,6 +72,8 @@ Before an authorized gate attempt, show PENDING. At an attempted gate, missing o
 unverifiable mandatory evidence or a failed control is NO-GO; only complete observed
 pass evidence supports PASS for that gate. A P0 pass never cures an invalid full pack
 or proves full-pack admission. No admission status grants spending or live dispatch.
+P0 NO-GO requires M11 SKIPPED and no implementation; full_pack NO-GO requires
+execution SKIPPED, with no dev-only research substitute.
 Do not estimate a confirmatory effect from an ineligible pack; preserve permitted
 descriptive records, costs, planned populations and the explicit exclusion reason.
 

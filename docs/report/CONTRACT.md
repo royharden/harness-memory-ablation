@@ -74,6 +74,9 @@ reasons. Preserve admission PENDING/NO-GO/PASS separately from candidate grade,
 campaign completion, Dirty construction disposition and K/L execution status.
 PENDING is pre-attempt; attempted gates with missing/unverifiable required evidence
 are NO-GO. Static format review cannot emit PASS, and P0 is not a full-pack receipt.
+P0 NO-GO reports M11 SKIPPED; full_pack NO-GO reports execution SKIPPED. Preserve
+the scoped gate decision separately; descriptive records do not constitute a
+dev-only research substitute.
 
 Resolve eligibility through the [metrics admission mapping](../metrics/CONTRACT.md#admission-eligibility-and-custody).
 Unresolved receipt bindings block confirmatory presentation; do not hide incurred
