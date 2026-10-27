@@ -10,7 +10,11 @@ from decimal import Decimal
 from .statistics import task_cluster_comparison
 
 
-CLASSES = {"memory-independent", "decision-dependent", "misleading-memory"}
+CLASS_TO_STRATUM = {
+    "independent": "memory-independent", "decision": "decision-dependent",
+    "misleading": "misleading-memory",
+}
+CLASSES = set(CLASS_TO_STRATUM)
 
 
 def calculate_task_statistics(
@@ -59,7 +63,7 @@ def calculate_task_statistics(
             results.append({"harness_id": harness, "inferential_claim": None, "reason": "incomplete_prespecified_task_design", "tasks_by_class": strata_counts})
             continue
         for left, right, primary in (("M2", "M0", True), ("M2", "M1", False), ("M1", "M0", False)):
-            strata = {name: [] for name in sorted(CLASSES)}
+            strata = {name: [] for name in sorted(CLASS_TO_STRATUM.values())}
             for task, arms in sorted(tasks.items()):
                 record = {"task_id": task}
                 for side, arm in (("left", left), ("right", right)):
@@ -68,7 +72,7 @@ def calculate_task_statistics(
                         float(cost_by_cell[arms[arm][repeat]["cell_id"]]) if cost_by_cell.get(arms[arm][repeat]["cell_id"]) is not None else None
                         for repeat in range(3)
                     ]
-                strata[classes[task]].append(record)
+                strata[CLASS_TO_STRATUM[classes[task]]].append(record)
             results.append({
                 "harness_id": harness, "left": left, "right": right,
                 "primary": primary, "secondary_unadjusted": not primary,

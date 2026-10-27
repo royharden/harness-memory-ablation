@@ -9,7 +9,7 @@ from typing import Any
 from .statistics import task_cluster_comparison
 from .comparisons import descriptive_comparisons
 from .design import calculate_task_statistics
-from .trajectories import summarize_trajectory
+from .trajectories import summarize_trajectory, summarize_public_checkpoints
 
 
 class ExportValidationError(ValueError):
@@ -20,11 +20,11 @@ def _parse_export(payload: Any) -> dict:
     # The separate campaign producer owns closed DTOs and hash/reference checks.
     # Never fall back to a permissive local model when that contract is missing.
     try:
-        from m11.campaign import PublicExport
+        from m11.campaign import parse_export
     except ImportError as exc:
         raise ExportValidationError("campaign_public_export_contract_unavailable") from exc
     try:
-        return PublicExport.model_validate(payload).model_dump(mode="json")
+        return parse_export(payload).model_dump(mode="json")
     except (ValueError, TypeError) as exc:
         raise ExportValidationError("invalid_public_export") from exc
 
@@ -72,7 +72,12 @@ def analyze_export(payload: Any) -> dict:
     cells = _unique(export["planned_cells"], "cell_id")
     attempts = _unique(export["attempts"], "attempt_id")
     grades = _unique(export["grades"], "attempt_id")
-    costs = _unique(export["cost_observations"], "attempt_id")
+    _unique(export["cost_observations"], "cost_id")
+    estimates = [cost for cost in export["cost_observations"] if cost["kind"] == "list_price_estimate"]
+    tranche_receipts = [cost for cost in export["cost_observations"] if cost["kind"] == "tranche_receipt"]
+    # Multiple competing per-attempt estimates require explicit source resolution,
+    # never additive scope guessing. Tranche actual receipts are never allocated.
+    costs = _unique(estimates, "attempt_id")
     usage = _unique(export["usage_observations"], "observation_id")
     models = _unique(export["model_evidence"], "model_evidence_id")
     by_cell: dict[str, list[dict]] = defaultdict(list)
@@ -176,13 +181,20 @@ def analyze_export(payload: Any) -> dict:
             group["cost_per_pass_usd"] = None
             group["cost_per_distinct_task_usd"] = None
             group["cost_per_pass_reason"] = "comparison_arm_unknown_cost"
-    reasons = ["simulated_no_inference"] if mode == "SIMULATED" else ["admission_freeze_and_embargo_metadata_unavailable"]
+    eligibility = export["eligibility"]
+    # Canonical r1 intentionally has no verified released-MEASURED state. Never
+    # invent eligibility from caller booleans, receipt hashes or the source ruling.
+    if eligibility["inferential_eligible"] is not False or eligibility["public_release_eligible"] is not False:
+        raise ExportValidationError("unavailable_independent_release_verification")
+    reasons = ["simulated_no_inference"] if mode == "SIMULATED" else [eligibility["unavailable_reason"]]
     return {
         "schema_version": "m11-analysis/1", "campaign_id": export["campaign_id"], "mode": mode,
         "experiment_kind": export["experiment_kind"], "construction_status": "runtime-unverified",
         "status": "INCOMPLETE" if missing else "DESCRIPTIVE_ONLY",
         "unavailable_reasons": reasons, "planned_cells": outcomes, "attempts": export["attempts"],
-        "groups": groups, "comparisons": descriptive_comparisons(outcomes), "trajectories": export["trajectory_checkpoints"],
+        "groups": groups, "comparisons": descriptive_comparisons(outcomes),
+        "trajectories": summarize_public_checkpoints(export["trajectory_checkpoints"]),
+        "eligibility": eligibility, "billing_reconciliation": tranche_receipts,
         "limitations": export["limitations"], "provenance": export,
         "inferential_claim": None, "independent_worksheets": "PENDING",
     }
