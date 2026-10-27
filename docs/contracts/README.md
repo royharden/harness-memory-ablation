@@ -16,6 +16,7 @@ specification cannot amend the frozen plan.
 | --- | --- |
 | [harnessrun v1](harnessrun-v1.md) | 3. Exported runner contract — harnessrun v1; 6. Isolation, native delivery and model evidence; 9. Monetary authority, token pricing and $40 activation; 12. Reporting, stopping and known failure modes |
 | [Treatment and parser requirements](treatment-parser.md) | 5. Data, authorship and custody; 6. Isolation, native delivery and model evidence; 7. Preregistered task experiment; 8. Separate longitudinal experiment and exact rot metrics; 9; 10. Build packages — 14, after P0 and later Roy launch |
+| [Admission seam mapping](admission-seam.md) | 3–5; 7–8; 10 P1/P6/P10; 12. Reporting, stopping and known failure modes |
 
 ## Producer and consumer seams
 
