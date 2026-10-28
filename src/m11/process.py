@@ -24,6 +24,7 @@ from harnessrun import AttemptSpec, ContractError, LaunchSpec, canonical_json, s
 from .workspace import (RuntimeAttestation, RuntimePermit, RuntimeVerifier,
     TaskDelivery, UnavailableRuntimeVerifier, WorkspacePolicy,
     confirm_execution_permission, validate_workspace)
+from .configuration import require_no_placeholders
 
 
 class ControllerRefusal(ContractError):
@@ -237,6 +238,7 @@ class ProcessController:
             raise ControllerRefusal("isolated Linux execution context required; host fallback forbidden")
         # Never inherit os.environ, PATH, secrets, startup hooks or user config.
         env = dict(environment) if environment is not None else {}
+        require_no_placeholders(env)
         if set(env) != set(policy.environment_names) or any(
             not isinstance(key, str) or not isinstance(value, str) or "\x00" in value
             for key, value in env.items()
