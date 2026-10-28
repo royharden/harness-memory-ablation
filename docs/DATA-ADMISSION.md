@@ -16,6 +16,8 @@ Its modules are intended for a future approved operator:
 - inventory: caller-enumerated artifact hash inspection; no recursive private search.
 - admission: m11-admission/1, external signatures/appointments and per-item controls.
 - intake: sealed manifest hash and gate binding; visible-only materialization plan.
+- registration: stdlib exact canonical registration/suite/cell/attempt join, no wheel dependency.
+- wire: narrow accepted GradeResult ID/Text domains; not a general model parser.
 - grade: immutable candidate/opaque-task/grader binding, offline grading plan and
   external verified receipt binding. No candidate or grader execution exists here.
 - cli: inspect is HASH_INSPECTION_ONLY; admit has no external verifier context and
@@ -56,11 +58,13 @@ It verifies the pinned pack/receipt before returning visible identities only.
 Trusted paths/contents never enter its result. The future operator must enforce
 mount separation and exposure logging; a plan is not materialization evidence.
 
-prepare_grade requires verified P0, full_pack for heldout, explicit future runtime
+prepare_grade requires verified P0, full_pack for heldout/diagnostic, explicit future runtime
 authority, isolated-image/evidence digests and frozen opaque-ID/suite/grader mapping.
 It returns a nonexecuted plan only. bind_external_grade requires separately verified
 hash-bound m11-grader-execution/1 evidence with identical attempt/artifact/task/grader
-and image/isolation, suite and immutable grade-plan bindings. grade_plan_sha256 uses
+and image/isolation, suite and immutable grade-plan bindings. Current m11-grade-plan/2 requires a registration_binding_sha256 and rejects historical
+source-only plan/1 rather than silently adapting it. GradeRequest now requires that
+binding digest. grade_plan_sha256 uses
 UTF-8 sorted-key JSON with compact separators, non-ASCII preserved and nonfinite
 numbers refused, without any self-hash field. The resulting GradeResult uses accepted harnessrun
 fields but does not import its wheel. No grade is fabricated for absent artifacts.
@@ -87,3 +91,39 @@ Deferred execution: actual P0 appointments/kit/signatures/operator reruns; all o
 wrong/null/stability, seed/tripwire/claim and isolation checks; tamper/refusal and
 wire/export integration; external-signature verification and TOCTOU-resistant mounted
 custody; installed-wheel boundary and all K/L checks. Static inspection proves none.
+
+## Joined source r4 — accepted producer names
+
+Source reference: joined master d77f78d, harnessrun.models.GradeResult and
+m11.campaign SuiteManifest/Registration/PlannedCell/SuiteTask/SeedCheckpoint.
+No producer module is imported or invoked by evaluation.
+
+evaluation.registration.prepare_registered_grade consumes exact canonical serialized
+suite/registration/cell/attempt bytes plus FrozenJoinAuthority and actual existing
+GradingAuthority/GateContext/verifiers. FrozenJoinAuthority has pinned suite and
+registration digests and a mandatory caller verify_graph callback. The callback must
+validate accepted complete closed producer models AND the frozen schedule/attempt
+graph; this narrow stdlib join does not reimplement those validators. Missing callback
+refuses. An always-true callback is not authentic caller authority or a valid deployment.
+
+The bridge checks suite_sha256, campaign_id/registration_id, cell_id/attempt_id,
+retained candidate artifact, execution task/hash/class, and exact seed/checkpoint or
+task-to-opaque_task_id mapping. Cells without a retained exited artifact are unavailable;
+no synthetic attempt/grade fills them. Probe/smoke grading is not silently reinterpreted.
+
+m11-registered-grade-binding/1 pins registration/suite/cell/attempt canonical digests,
+execution task/seed/checkpoint, mode/split, artifact and grader identity. Its digest is
+inside m11-grade-plan/2, so the existing external execution receipt's full grade-plan
+digest binds that exact registration join. bind_registered_grade checks the closed
+binding and delegates actual signature/receipt checks to bind_external_grade.
+Returned GradeResult has exactly harnessrun/1 fields and accepted Identifier<=256,
+Text<=4096 domains with control characters refused. No extra suite/registration fields
+are inserted into GradeResult. The binding envelope preserves their separate purpose.
+
+This source emits neither PublicExport nor eligibility nor observed claim records.
+Current public source refuses independent PASS and released MEASURED hidden outcomes;
+the bridge does not bypass those restrictions. New m11-export/2 and
+m11-public-claim/1 are owned by DL3. Registered claim IDs and builder reference
+expectations never manufacture observed presence/anchor/test state. Consume their
+actual published versioned DTO through the public producer, not shape fallback.
+No filled observations, gate evidence or independent material is supplied here.
