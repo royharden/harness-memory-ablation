@@ -11,6 +11,7 @@ from .comparisons import descriptive_comparisons
 from .design import calculate_task_statistics
 from .trajectories import summarize_trajectory, summarize_public_checkpoints
 from .outcomes import resolve_cell_outcome
+from .claims import summarize_public_claims
 
 
 class ExportValidationError(ValueError):
@@ -30,6 +31,8 @@ def _parse_export(payload: Any) -> dict:
         material = payload.model_dump(mode="json") if isinstance(payload, PublicExport) else payload
         return parse_export(material).model_dump(mode="json")
     except (ValueError, TypeError) as exc:
+        if str(exc).startswith("unsupported_export_version:"):
+            raise ExportValidationError("unsupported_export_version: expected m11-export/2") from exc
         raise ExportValidationError("invalid_public_export") from exc
 
 
@@ -58,16 +61,16 @@ def _money(value: Any) -> Decimal | None:
 
 
 def analyze_export(payload: Any) -> dict:
-    """Analyze the canonical m11-export/1 DTO without grading or native activity.
+    """Analyze the canonical m11-export/2 DTO without grading or native activity.
 
     PublicExport is a provisional DL3 seam. Until producer eligibility metadata is
     reconciled, inferential output refuses unavailable admission/embargo evidence.
     Raw planned slots/attempts and explicit descriptive bounds remain visible.
     """
     export = _parse_export(payload)
-    if export.get("schema_version") != "m11-export/1":
-        raise ExportValidationError("unsupported_export_version")
-    required = ("planned_cells", "attempts", "grades", "usage_observations", "model_evidence", "limitations", "cost_observations", "trajectory_checkpoints")
+    if export.get("schema_version") != "m11-export/2":
+        raise ExportValidationError("unsupported_export_version: expected m11-export/2")
+    required = ("planned_cells", "attempts", "grades", "usage_observations", "model_evidence", "limitations", "cost_observations", "trajectory_checkpoints", "claim_observations")
     if any(not isinstance(export.get(key), list) for key in required):
         raise ExportValidationError("missing_export_collection")
     mode = export["mode"]
@@ -172,7 +175,7 @@ def analyze_export(payload: Any) -> dict:
             group["cost_per_distinct_task_usd"] = None
             group["cost_per_pass_reason"] = "comparison_arm_unknown_cost"
     eligibility = export["eligibility"]
-    # Canonical r1 intentionally has no verified released-MEASURED state. Never
+    # Eligibility/1 intentionally has no verified released-MEASURED state. Never
     # invent eligibility from caller booleans, receipt hashes or the source ruling.
     if eligibility["inferential_eligible"] is not False or eligibility["public_release_eligible"] is not False:
         raise ExportValidationError("unavailable_independent_release_verification")
@@ -184,6 +187,7 @@ def analyze_export(payload: Any) -> dict:
         "unavailable_reasons": reasons, "planned_cells": outcomes, "attempts": export["attempts"],
         "groups": groups, "comparisons": descriptive_comparisons(outcomes),
         "trajectories": summarize_public_checkpoints(export["trajectory_checkpoints"]),
+        "claims": summarize_public_claims(export["claim_observations"], export["trajectory_checkpoints"], export["suite"]["seeds"]),
         "eligibility": eligibility, "billing_reconciliation": tranche_receipts,
         "limitations": export["limitations"], "provenance": export,
         "inferential_claim": None, "independent_worksheets": "PENDING",

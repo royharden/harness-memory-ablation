@@ -22,7 +22,7 @@ _NOTICE = (
 _ORDER = (
     "schema_version", "campaign_id", "mode", "experiment_kind", "status",
     "construction_status", "unavailable_reasons", "limitations", "provenance",
-    "groups", "comparisons", "trajectories", "planned_cells", "attempts",
+    "groups", "comparisons", "trajectories", "claims", "planned_cells", "attempts",
 )
 _INFERENCE_KEYS = frozenset({
     "p_value", "pvalue", "confidence_interval", "bootstrap_interval",

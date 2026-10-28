@@ -123,22 +123,28 @@ def claim_drift(claims) -> dict:
     observations = []
     failures = unknown = 0
     for claim in registered:
-        if not isinstance(claim, Mapping) or set(claim) != {"claim_id", "source_anchor", "present", "outcome"}:
+        if not isinstance(claim, Mapping) or set(claim) != {"claim_id", "anchor_present", "present", "outcome"}:
             raise ValueError("invalid registered claim fields")
         claim_id = claim["claim_id"]
         if not isinstance(claim_id, str) or not claim_id or claim_id in seen or claim_id in unregistered:
             raise ValueError("claim IDs must be unique nonempty strings")
         seen.add(claim_id)
-        anchor, present, outcome = claim["source_anchor"], claim["present"], claim["outcome"]
-        if anchor is not None and (not isinstance(anchor, str) or not anchor):
-            raise ValueError("source_anchor must be a nonempty string or null")
-        if type(present) is not bool or outcome not in ("pass", "fail", "unknown"):
-            raise ValueError("present must be boolean; outcome must be pass/fail/unknown")
-        state = "fail" if not present or anchor is None else outcome
-        reason = "deleted" if not present else "missing_anchor" if anchor is None else outcome
+        anchor, present, outcome = claim["anchor_present"], claim["present"], claim["outcome"]
+        if any(value is not None and type(value) is not bool for value in (anchor, present)) or outcome not in ("pass", "fail", "unknown"):
+            raise ValueError("present/anchor_present must be boolean or null; outcome must be pass/fail/unknown")
+        if present is False:
+            state, reason = "fail", "deleted"
+        elif anchor is False:
+            state, reason = "fail", "missing_anchor"
+        elif outcome == "fail":
+            state, reason = "fail", "false_assertion"
+        elif present is None or anchor is None or outcome == "unknown":
+            state, reason = "unknown", "observation_unavailable"
+        else:
+            state, reason = "pass", "pass"
         failures += state == "fail"
         unknown += state == "unknown"
-        observations.append({"claim_id": claim_id, "source_anchor": anchor,
+        observations.append({"claim_id": claim_id, "anchor_present": anchor, "present": present,
                              "state": state, "reason": reason})
     return {"definition": "claim-drift/1", **_area(failures, unknown, 4),
             "registered": observations, "unregistered_unscored": list(unregistered)}

@@ -66,3 +66,22 @@ fabricated grade. Contradictory terminal declarations and grade/failure evidence
 refuse instead of selecting a favorable outcome. A pre-launch refusal remains
 unstarted; cleanup/running states remain unknown. This is semantic source inspection,
 not executed reference resolution or evidence authentication.
+
+## Export/2 observed claims
+
+Analysis now accepts only canonical `m11-export/2`, with required
+`claim_observations`; v1 is explicitly unsupported, with no implicit empty-array
+upgrade. The parser still belongs to DL3. `summarize_public_claims` maps exactly
+`m11-public-claim/1` records to the normalized claim scorer. Four registered IDs in
+their frozen seed order are required at every longitudinal cell, including unknown
+records. Candidate/checkpoint bindings are checked; immutable grader/receipt and
+embargo eligibility validation stay with the canonical parser. Every original
+observation, missing reason and provenance reference is retained in the result.
+
+Observed false presence, false anchor-presence or a failing deterministic test
+establish drift; remaining unknown components prevent a passing conclusion. Null
+is never inferred deletion/absence. Added unregistered IDs are listed without
+scoring or denominator changes. No source-anchor paths, assertion text or expected
+answers are invented. The `claims` result section passes through the existing
+escaped HTML/Markdown/JSON renderers. Current literal-false eligibility and measured
+claim embargo remain unchanged; no source approval enables inference or release.
