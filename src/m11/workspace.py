@@ -8,11 +8,15 @@ from __future__ import annotations
 
 from pathlib import PurePosixPath
 import re
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from typing import Protocol
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
-from harnessrun import AttemptSpec, ContractError, LaunchSpec, Mount, canonical_json, sha256_bytes
+from harnessrun import AttemptSpec, CapabilityRecord, ContractError, LaunchSpec, Mount, canonical_json, sha256_bytes
+from harnessrun.models import Identifier, SHA256
 
 
 def _absolute(path: str) -> str:
@@ -134,3 +138,164 @@ def validate_workspace(attempt: AttemptSpec, launch: LaunchSpec, policy: Workspa
         elif not path or "\\" in path or ":" in path or any(p in ("", ".", "..") for p in path.split("/")):
             raise ContractError("noncanonical relative treatment path")
     return WorkspaceCheck(policy_sha256=sha256_bytes(canonical_json(policy.model_dump(mode="json"))))
+
+
+class RuntimeVerificationUnavailable(ContractError):
+    """No trusted runtime/admission/isolation integration can verify this request."""
+
+
+class TaskDelivery(BaseModel):
+    """Private controller input, separate from the closed public LaunchSpec.
+
+    task_sha256 binds the suite execution item; payload_sha256 binds exact visible
+    instruction bytes. A future trusted verifier must establish their relationship.
+    No input content is placed in argv, wire events, or verification error messages.
+    """
+
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    task_id: Identifier
+    task_sha256: SHA256
+    transport: Literal["utf8_stdin"] = "utf8_stdin"
+    payload: bytes
+    payload_sha256: SHA256
+
+    @model_validator(mode="after")
+    def input_binding(self) -> TaskDelivery:
+        if not self.payload or len(self.payload) > 1024 * 1024 or b"\x00" in self.payload:
+            raise ValueError("visible task input must be nonempty bounded NUL-free UTF8")
+        self.payload.decode("utf-8", errors="strict")
+        if sha256_bytes(self.payload) != self.payload_sha256:
+            raise ValueError("task input hash mismatch")
+        return self
+
+
+class RuntimePermit(BaseModel):
+    """Untrusted permit artifact until a future trusted verifier authenticates it.
+
+    Hashes and this type do not grant execution. Current source has no issuer,
+    signer, receipt verifier or operator activation that can authorize runtime.
+    """
+
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    schema_version: Literal["m11-runtime-permit/1"] = "m11-runtime-permit/1"
+    permit_id: Identifier
+    attempt_id: Identifier
+    launch_id: Identifier
+    attempt_spec_sha256: SHA256
+    launch_spec_sha256: SHA256
+    policy_sha256: SHA256
+    delivery_sha256: SHA256
+    capabilities_sha256: SHA256
+    isolation_context_id: Identifier
+    ledger_run_id: Identifier
+    expires_at: str
+    admission_receipt_sha256: SHA256
+    activation_receipt_sha256: SHA256
+    capability_receipt_sha256: SHA256
+    isolation_receipt_sha256: SHA256
+    finite_liability_receipt_sha256: SHA256
+    ledger_begin_receipt_sha256: SHA256
+    task_delivery_receipt_sha256: SHA256
+
+
+class RuntimeAttestation(BaseModel):
+    """Return contract of trusted verification, not a caller-owned admission flag."""
+
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    permit_sha256: SHA256
+    isolation_context_id: Identifier
+    verified_platform: Literal["linux"]
+    checked_at: str
+    verification_receipt_sha256: SHA256
+
+
+class RuntimeVerifier(Protocol):
+    """Future operator-owned authority, never loaded from a public request object.
+
+    Must authenticate signatures, revocation, P0/activation/source access, exact
+    capability/task-input/model/usage/finite-liability evidence, actual M9 begin,
+    pinned image/binary and *current* Linux isolation namespaces/mounts/home/config/
+    network in the executing context. Source declaration checks prove none of it.
+    """
+
+    def verify(self, permit: RuntimePermit, attempt: AttemptSpec, launch: LaunchSpec,
+               policy: WorkspacePolicy, delivery: TaskDelivery) -> RuntimeAttestation: ...
+
+
+class UnavailableRuntimeVerifier:
+    def verify(self, permit: RuntimePermit, attempt: AttemptSpec, launch: LaunchSpec,
+               policy: WorkspacePolicy, delivery: TaskDelivery) -> RuntimeAttestation:
+        raise RuntimeVerificationUnavailable(
+            "P0/runtime activation, authentic permit/isolation/capability/task-delivery verification and M9 begin integration unavailable"
+        )
+
+
+def _runtime_utc(value: str) -> datetime:
+    if not value.endswith(("Z", "+00:00")) or "T" not in value:
+        raise RuntimeVerificationUnavailable("runtime timestamp must be RFC3339 UTC")
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise RuntimeVerificationUnavailable("malformed runtime timestamp") from exc
+
+
+def confirm_execution_permission(attempt: AttemptSpec, launch: LaunchSpec, policy: WorkspacePolicy,
+                                 delivery: TaskDelivery, permit: RuntimePermit,
+                                 verifier: RuntimeVerifier) -> RuntimeAttestation:
+    """Bind an exact request then ask the trusted authority; hashes alone never pass."""
+    validate_workspace(attempt, launch, policy)
+    if (delivery.task_id, delivery.task_sha256) != (attempt.task_id, attempt.task_sha256):
+        raise RuntimeVerificationUnavailable("task delivery does not bind scheduled execution item")
+    expected = (attempt.attempt_id, launch.launch_id, sha256_bytes(canonical_json(attempt)),
+                sha256_bytes(canonical_json(launch)), sha256_bytes(canonical_json(policy)),
+                sha256_bytes(canonical_json(delivery)))
+    actual = (permit.attempt_id, permit.launch_id, permit.attempt_spec_sha256,
+              permit.launch_spec_sha256, permit.policy_sha256, permit.delivery_sha256)
+    if expected != actual:
+        raise RuntimeVerificationUnavailable("permit scope differs from immutable execution request")
+    now = datetime.now(timezone.utc)
+    if _runtime_utc(permit.expires_at) <= now:
+        raise RuntimeVerificationUnavailable("runtime permit expired")
+    attestation = verifier.verify(permit, attempt, launch, policy, delivery)
+    if not isinstance(attestation, RuntimeAttestation):
+        raise RuntimeVerificationUnavailable("trusted verifier did not supply its attestation contract")
+    if (attestation.permit_sha256, attestation.isolation_context_id) != (
+        sha256_bytes(canonical_json(permit)), permit.isolation_context_id
+    ):
+        raise RuntimeVerificationUnavailable("runtime verification does not bind this permit/context")
+    finished = datetime.now(timezone.utc)
+    age = (finished - _runtime_utc(attestation.checked_at)).total_seconds()
+    if age < -1 or age > 30 or _runtime_utc(permit.expires_at) <= finished:
+        raise RuntimeVerificationUnavailable("runtime verification is stale or permit expired during verification")
+    return attestation
+
+
+@dataclass(frozen=True)
+class PreparationAuthorization:
+    """Trusted controller integration only; not a public JSON switch or issuer."""
+
+    policy: WorkspacePolicy
+    delivery: TaskDelivery
+    permit: RuntimePermit
+    capabilities: CapabilityRecord
+    verifier: RuntimeVerifier
+
+
+def confirm_native_preparation(attempt: AttemptSpec, launch: LaunchSpec,
+                               authorization: PreparationAuthorization,
+                               cli_version: str) -> None:
+    capability = authorization.capabilities
+    if (capability.harness_id, capability.cli_version, capability.binary_sha256,
+        capability.image_sha256, capability.provider_config_sha256, capability.settings_sha256) != (
+        attempt.harness_id, cli_version, launch.binary_sha256, launch.image_sha256,
+        attempt.provider_config_sha256, attempt.model_settings_sha256
+    ):
+        raise RuntimeVerificationUnavailable("capability pins do not match native launch")
+    if any(item.status != "verified" for item in (
+        capability.model_evidence, capability.native_memory, capability.usage_buckets, capability.spend_bound
+    )):
+        raise RuntimeVerificationUnavailable("native capabilities lack verified evidence")
+    if sha256_bytes(canonical_json(capability)) != authorization.permit.capabilities_sha256:
+        raise RuntimeVerificationUnavailable("permit capability record mismatch")
+    confirm_execution_permission(attempt, launch, authorization.policy, authorization.delivery,
+                                 authorization.permit, authorization.verifier)
