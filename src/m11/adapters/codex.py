@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from harnessrun import AttemptSpec, ContractError, LaunchSpec
+from ..workspace import PreparationAuthorization, confirm_native_preparation
 
 from .base import AdapterBase, CaptureParser, NativePreparationRefused, PreparationContext, closed, counter, empty_buckets
 
@@ -18,10 +19,14 @@ class CodexAdapter(AdapterBase):
 
     def planned_launch(self, spec: AttemptSpec) -> LaunchSpec:
         return self._launch(spec, (self.context.executable, "exec", "--json", "--model",
-                                  self.context.provider.requested_model_id))
+                                  self.context.provider.requested_model_id, "-"))
 
-    def prepare(self, spec: AttemptSpec) -> LaunchSpec:
+    def prepare(self, spec: AttemptSpec, *, authorization: PreparationAuthorization | None = None) -> LaunchSpec:
         self._validate(spec)
+        if authorization is not None:
+            candidate = self.planned_launch(spec)
+            confirm_native_preparation(spec, candidate, authorization, self.context.cli_version)
+            return candidate
         raise NativePreparationRefused(
             "Codex native launch refused: P0/runtime activation, pinned image, model/loader/usage "
             "evidence and finite spend bound unsupported; no native fallback")

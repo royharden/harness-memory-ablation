@@ -4,6 +4,7 @@ from __future__ import annotations
 from decimal import Decimal, InvalidOperation
 
 from harnessrun import AttemptSpec, ContractError, LaunchSpec
+from ..workspace import PreparationAuthorization, confirm_native_preparation
 
 from .base import AdapterBase, CaptureParser, NativePreparationRefused, PreparationContext, closed, counter, empty_buckets
 
@@ -21,12 +22,16 @@ class ClaudeAdapter(AdapterBase):
     def planned_launch(self, spec: AttemptSpec) -> LaunchSpec:
         """Inspection-only argv candidate; not an eligibility or authorization result."""
         return self._launch(spec, (self.context.executable, "--print", "--verbose",
-                                  "--output-format", "stream-json", "--model",
+                                  "--output-format", "stream-json", "--input-format", "text", "--model",
                                   self.context.provider.requested_model_id,
                                   "--max-turns", str(spec.max_turns)))
 
-    def prepare(self, spec: AttemptSpec) -> LaunchSpec:
+    def prepare(self, spec: AttemptSpec, *, authorization: PreparationAuthorization | None = None) -> LaunchSpec:
         self._validate(spec)
+        if authorization is not None:
+            candidate = self.planned_launch(spec)
+            confirm_native_preparation(spec, candidate, authorization, self.context.cli_version)
+            return candidate
         raise NativePreparationRefused(
             "Claude native launch refused: P0/runtime activation, pinned image, model/loader/usage "
             "evidence, M9 reservation and finite liability authorization unverified")

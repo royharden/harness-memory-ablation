@@ -41,13 +41,23 @@ UTF-8 text. Its trace must use the matching attempt ID. Synthetic model evidence
 cannot claim native verification. No builder-authored trace is a P0/held-out answer
 or independent metric worksheet.
 
-Claude/Codex `prepare` always raises `NativePreparationRefused`. Inspection-only
-`planned_launch(spec)` returns a candidate argv with an exact requested model;
-it grants no eligibility and is intentionally not an executable integration.
-Task input delivery, isolated image/config/home, allowed paths/mounts, admission,
-model/loader/usage proof, monetary reservations, finite liability and signed live
-activation remain controller gates. No native CLI fallback or subprocess exists
-in this package. Subscription/priced subscription ingestion remains disabled.
+Claude/Codex `prepare` defaults to `NativePreparationRefused`. Optional typed
+`PreparationAuthorization` is reserved for a future trusted controller: exact
+verified capability pins/receipt scope, task delivery, isolation policy and
+authenticated runtime permit must pass its external verifier before prepare can
+return launch data. The only provided verifier is unavailable and always refuses;
+source cannot issue permits or authenticate independent evidence. Inspection-only
+`planned_launch(spec)` returns a candidate argv with an exact requested model.
+Neither path spawns. Hashes, booleans or supplied capability labels alone cannot
+grant eligibility through the default boundary.
+
+Task input is explicit bounded hash-bound UTF8 stdin, separate from LaunchSpec;
+Claude's candidate text input mode and Codex's `-` operand require exact-version
+verification in the future task-delivery receipt. Input text is never in argv.
+Isolated image/config/home, allowed paths/mounts, admission, model/loader/usage
+proof, monetary reservations, finite liability and signed live activation remain
+controller gates. No native CLI fallback or subprocess exists in the adapter
+package. Subscription/priced subscription ingestion remains disabled.
 
 Native parser constructors require keyword arguments `attempt_id`,
 `requested_model_id`, `evidence_ref`, `capture` (frozen exact bytes), and optional
