@@ -285,6 +285,7 @@ class ProcessController:
         truncated = False
         reason: StopReason = "crash"
         journal_ok = True
+        started_acknowledged = False
         empty = False
         try:
             # Recheck after durable claim latency. Any refusal consumes the claim.
@@ -310,6 +311,7 @@ class ProcessController:
                 # SID and PGID. Persist before IO; all failures enter cleanup.
                 try:
                     self._journal.record_started(claim, proc.pid, proc.pid)
+                    started_acknowledged = True
                 except Exception:
                     journal_ok = False
                     raise
@@ -380,10 +382,11 @@ class ProcessController:
                             stream.close()
                         except Exception:
                             journal_ok = False
+        confirmed = empty and journal_ok and started_acknowledged
         state = Lifecycle(attempt_id=attempt.attempt_id, launch_id=launch.launch_id,
-            process_state="exited" if empty and journal_ok else "cleanup_pending",
-            begin_state="begun" if proc is not None else "ambiguous", terminal_reason=reason,
-            cleanup_state="confirmed" if empty and journal_ok else "unconfirmed")
+            process_state="exited" if confirmed else "cleanup_pending",
+            begin_state="begun" if started_acknowledged else "ambiguous", terminal_reason=reason,
+            cleanup_state="confirmed" if confirmed else "unconfirmed")
         result = ControllerOutcome(state, bytes(output), truncated, sent,
             proc.returncode if proc is not None else None, time.monotonic() - started)
         try:
