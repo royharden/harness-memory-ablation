@@ -61,7 +61,7 @@ def _money(value: Any) -> Decimal | None:
 
 
 def analyze_export(payload: Any) -> dict:
-    """Analyze the canonical m11-export/1 DTO without grading or native activity.
+    """Analyze the canonical m11-export/2 DTO without grading or native activity.
 
     PublicExport is a provisional DL3 seam. Until producer eligibility metadata is
     reconciled, inferential output refuses unavailable admission/embargo evidence.
