@@ -9,7 +9,7 @@ not scientific admission or demonstrated runtime compatibility.
 `Registration`, `SuiteManifest`, `SuiteTask`, `SuiteSeed`, `SeedCheckpoint`,
 `PlannedCell`, `ScheduleManifest`, `TrajectoryCheckpoint`, `TripwireObservation`,
 `AdmissionReference`, `CostObservation`, `PublicCheckpoint`, `ResultEligibility`,
-`PublicExport`. Helper functions
+`PublicExport`, `PublicClaim`. Helper functions
 `canonical_json` is an explicit UTF-8 text view of shared
 `harnessrun.canonical_json` bytes for SQLite/text files. `sha256_json` is the
 shared helper reexported directly, not reimplemented. Source reconciliation uses
@@ -20,13 +20,28 @@ mixed modes, unresolved IDs, population/hash drift and false grading linkage.
 It imports the ten-record closure types from `harnessrun` directly, without a
 private evaluation dependency or silent replacement model.
 
-`PublicExport` is separate `m11-export/1`: the SOURCE-SEAMS keys are retained,
+`PublicExport` is separate `m11-export/2`: the SOURCE-SEAMS keys are retained,
 with required nested public `registration` and `suite` manifests so hashes and
 explicit mappings can be resolved. Every result array is required, including
 empty arrays. Class tokens are `independent`, `decision`, `misleading`;
 registration stages are A/B/C/D0/D1/E. Cells bind task hash/class/opaque grading
 ID, arm/system/repeat, optional paired seed/checkpoint, optional actual attempt
 and disposition. No attempt/grade is fabricated for an unstarted slot.
+
+Version 2 adds required `claim_observations: tuple[PublicClaim, ...]` with explicit
+`m11-public-claim/1` version per wire entry. `parse_export` rejects v1 as
+unsupported; no union parser, renamed legacy fields or default-empty conversion.
+Each claim binds campaign/seed/trajectory/checkpoint/cell/attempt/candidate and
+claim ID, registered classification, `present`, `anchor_present`, `test_passed`
+(each bool or null with its corresponding missing reason), grader hash and opaque
+receipt reference/hash. Every longitudinal cell retains its four frozen registered
+IDs in order, even when all observations are unknown. IDs alone are not observed
+presence/deletion/test results. Unregistered IDs may be transported only with
+`registered=false` and remain outside the fixed denominator four.
+Observed claims must resolve to exact checkpoint/attempt artifact and GradeResult
+grader/receipt; missing artifacts/graders never fabricate observations. No assertion
+text, expected values or source paths are transported. Current embargo rejects
+MEASURED observed claims and current inference/release flags remain literal false.
 
 `CostObservation` separates `list_price_estimate` (per attempt, `estimated_usd`
 nullable decimal string, dated price hash, usage IDs/coverage and evidence reference/hash)
