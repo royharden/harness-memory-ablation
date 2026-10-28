@@ -29,7 +29,14 @@ class IntakeRefusal(ValueError):
 
 
 def _forbidden_component(name: str) -> bool:
-    return name.startswith(".") or name.casefold() in _FORBIDDEN or PurePosixPath(name).stem.casefold() in _FORBIDDEN
+    # Ordinary Win32 lookup can trim trailing dots/spaces; refuse that spelling
+    # before any lookup rather than normalizing it into a credential directory.
+    return (
+        not name or name.endswith((" ", ".")) or ":" in name
+        or any(ord(char) < 32 or ord(char) == 127 for char in name)
+        or name.startswith(".") or name.casefold() in _FORBIDDEN
+        or PurePosixPath(name).stem.casefold() in _FORBIDDEN
+    )
 
 
 def _no_links(path: Path) -> None:
@@ -51,6 +58,10 @@ def _bounded_path(candidate: Path, root: Path) -> Path:
     resolved = candidate.resolve(strict=True)
     if not resolved.is_relative_to(root):
         raise IntakeRefusal("resolved_path_outside_checkout")
+    # Canonical components must also pass; an alternate filesystem spelling is
+    # not permission to read a forbidden root through a different visible name.
+    if any(_forbidden_component(part) for part in resolved.relative_to(root).parts):
+        raise IntakeRefusal("resolved_hidden_or_credential_ancestor_forbidden")
     return resolved
 
 
