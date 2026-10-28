@@ -28,6 +28,10 @@ class IntakeRefusal(ValueError):
     """An input cannot be inspected safely or does not match the staged contract."""
 
 
+def _forbidden_component(name: str) -> bool:
+    return name.startswith(".") or name.casefold() in _FORBIDDEN or PurePosixPath(name).stem.casefold() in _FORBIDDEN
+
+
 def _no_links(path: Path) -> None:
     if path.is_symlink() or (os.name == "nt" and path.is_junction()):
         raise IntakeRefusal("symlink_or_junction_not_allowed")
@@ -40,6 +44,8 @@ def _bounded_path(candidate: Path, root: Path) -> Path:
         raise IntakeRefusal("path_outside_explicit_checkout_boundary")
     current = root
     for part in candidate.relative_to(root).parts:
+        if _forbidden_component(part):
+            raise IntakeRefusal("hidden_or_credential_ancestor_forbidden")
         current /= part
         _no_links(current)
     resolved = candidate.resolve(strict=True)
@@ -77,7 +83,7 @@ def _file_entry(entry: object) -> tuple[str, str, str]:
     parts = name.split("/")
     if relative.is_absolute() or "\\" in name or ":" in name or any(p in ("", ".", "..") for p in parts):
         raise IntakeRefusal("noncanonical_inventory_path")
-    if any(p.casefold() in _FORBIDDEN or p.startswith(".") for p in parts):
+    if any(_forbidden_component(p) for p in parts):
         raise IntakeRefusal("credential_hidden_or_repository_path_forbidden")
     if relative.suffix.casefold() in {".pem", ".key", ".env", ".pfx", ".p12"}:
         raise IntakeRefusal("credential_file_forbidden")
@@ -145,7 +151,7 @@ def inspect_staged(staged_root: str, inventory_sha256: str) -> dict[str, object]
         for name in subdirs:
             child = Path(directory) / name
             _no_links(child)
-            if name.startswith(".") or name.casefold() in _FORBIDDEN:
+            if _forbidden_component(name):
                 raise IntakeRefusal("forbidden_staged_directory")
             if child.relative_to(stage).as_posix() not in expected_directories:
                 raise IntakeRefusal("directory_outside_inventory_closure")
