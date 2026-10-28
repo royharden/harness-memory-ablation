@@ -1,0 +1,39 @@
+{
+  "schema_version": "m11-stage-a-pilot-plan/1",
+  "operational": false,
+  "disposition": "accepted for construction, independence PENDING - Roy, runtime-unverified",
+  "reported_spend_usd": "0",
+  "authorized_spend_usd": "0",
+  "cumulative_testing_ceiling_usd": "40",
+  "model_pin": "<PLACEHOLDER_MODEL_PIN>",
+  "account_id": "<PLACEHOLDER_ACCOUNT_ID>",
+  "credential_reference_name_only": "<PLACEHOLDER_API_KEY_REFERENCE>",
+  "immutable_price_table_sha256": "<PLACEHOLDER_PRICE_TABLE_SHA256>",
+  "external_hard_limit_receipt": "<PLACEHOLDER_EXTERNAL_HARD_LIMIT_RECEIPT>",
+  "finite_launch_bound_evidence": "<PLACEHOLDER_NATIVE_BOUND_PROOF>",
+  "authoritative_m9_allocation_snapshot": "<PLACEHOLDER_M9_ALLOCATION_SNAPSHOT>",
+  "p0_receipt_sha256": "<PLACEHOLDER_P0_RECEIPT_SHA256>",
+  "runtime_activation_receipt": "<PLACEHOLDER_RUNTIME_ACTIVATION_RECEIPT>",
+  "fixed_stage_a": {
+    "smoke_launches": 3,
+    "behavioral_probe_launches": 9,
+    "probe_repeats_per_arm": 3,
+    "total_launches": 12,
+    "pilot": "one prospectively selected member of the three planned smoke launches",
+    "after_pilot": "remaining two planned smoke launches, then all nine planned probe launches",
+    "additional_pilot_launches": 0,
+    "success_assumed": false,
+    "automatic_retry_or_replacement": false
+  },
+  "stop_loss": {
+    "authority": "actual pinned M9 monetary state, never this planning manifest or reporting log",
+    "cumulative_expression": "actual incurred + outstanding upper liabilities + proposed next liability + committed external costs <= 40",
+    "unknown_terms": "refuse dispatch; retain ambiguous full reservations",
+    "failure_cost": "include smoke, probes, failures, timeouts, ambiguous begins and all systems/tranches",
+    "before_first_pilot": "independent P0, approved account/key reference, exact pins, authentic runtime/isolation permission, proven finite liability and external hard billing limit",
+    "after_each_attempt": "reconcile identity/usage/retry coverage and monetary holds before any next dispatch; unknown, overbound or drift stops",
+    "no_affordability_promise": true,
+    "no_design_shrink": "preserve full stage/calibration/study counts; D09 growth rule stops if unaffordable"
+  },
+  "execution_state": "not run; placeholders cannot authorize or configure a live launch"
+}
