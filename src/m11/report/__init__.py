@@ -15,13 +15,16 @@ from typing import Any
 __all__ = ["render_html", "render_markdown", "render_json"]
 
 _NOTICE = (
-    "Source construction: runtime-unverified. P0 and K/L execution acceptance "
+    "Source-phase disposition: accepted for construction, independence PENDING - Roy, "
+    "runtime-unverified. This labels construction only, never validation of supplied observations. "
+    "A delegated stand-in is not human-independent; this renderer appoints no reviewer or verifier. "
+    "P0 and K/L execution acceptance "
     "remain deferred. Gate records do not authorize execution or publication. "
     "Missing values remain unknown; list-price estimates are not actual charges."
 )
 _ORDER = (
     "schema_version", "campaign_id", "mode", "experiment_kind", "status",
-    "construction_status", "unavailable_reasons", "limitations", "provenance",
+    "construction_status", "construction_context", "unavailable_reasons", "limitations", "provenance",
     "groups", "comparisons", "trajectories", "claims", "planned_cells", "attempts",
 )
 _INFERENCE_KEYS = frozenset({
