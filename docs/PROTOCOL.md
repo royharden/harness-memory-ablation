@@ -29,11 +29,40 @@ inspection or AST parsing establishes none of those gates. A supplied MEASURED
 label is provenance, not acceptance. Admission, candidate outcome, construction
 status and execution gates must remain distinct.
 
-The current consumer targets the provisional `m11.campaign.PublicExport` producer
-name. If unavailable it raises an explicit export-contract error; it never substitutes
-a permissive local schema. Cost-observation field names and eligibility metadata
-need producer reconciliation before source coherence is claimed. Until admission,
-freeze and result-embargo eligibility can be resolved, even MEASURED exports produce
-descriptive output with an explicit inference-unavailable reason. The separate pure
+The current consumer uses canonical `m11.campaign.parse_export`, which returns
+`PublicExport`, as declared in DL3's source handoff. If unavailable it raises an
+explicit export-contract error; it never substitutes a permissive local schema.
+Source integration against the actual accepted producer declaration remains a
+separate checkpoint. Canonical r1 has no verified released-MEASURED state and its
+eligibility flags are literal false. Even MEASURED input therefore remains descriptive
+with the producer's explicit inference-unavailable reason. The separate pure
 task-cluster helper implements the planned bootstrap and repeat-0 summaries for a
 future eligible caller; calling it does not establish admission or acceptance.
+
+`calculate_task_statistics` consumes normalized primary task cells, refusing
+non-primary arm/class/repeat shapes and incomplete 36/48 balanced designs. It
+returns conditional calculations only; canonical admission, growth and release
+eligibility must be established before any research presentation. It refuses
+SIMULATED inference. `summarize_trajectory` consumes rot's explicit documented
+checkpoint input and produces twelve chart points with per-checkpoint denominator
+four; a point is null if any observation is unknown. Its fixed48 trajectory area
+and feature-completion records remain separate. Neither helper guesses producer
+wire fields. Unpriced reported costs stay distinct from dated-price known subtotals.
+
+Canonical class IDs `independent`, `decision`, `misleading` map explicitly to the
+three metric strata; labels are not inferred from task text. Cost `kind` separates
+per-attempt `list_price_estimate` from `tranche_receipt`; actual tranche bills are
+retained without attempt allocation. Duplicate competing per-attempt estimates
+refuse until reconciled, rather than being summed by guessed scope. Ordered
+PublicCheckpoint tripwire IDs and boolean/null observations map explicitly to rot's
+pass/fail/unknown input. Feature-completed observations, missing reasons, source and
+reference evidence stay separate; they do not invent accrued-feature test inventory.
+
+Static source reconciliation of DL1's integrated shared models and pinned DL3
+declarations confirms canonical planned cells also carry their scheduler disposition.
+Analysis retains that declared value separately from the derived outcome: missing
+evaluator/infrastructure/unknown slots remain missing even without an attempt or
+fabricated grade. Contradictory terminal declarations and grade/failure evidence
+refuse instead of selecting a favorable outcome. A pre-launch refusal remains
+unstarted; cleanup/running states remain unknown. This is semantic source inspection,
+not executed reference resolution or evidence authentication.
