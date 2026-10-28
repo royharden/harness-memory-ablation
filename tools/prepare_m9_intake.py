@@ -134,6 +134,12 @@ def inspect_staged(staged_root: str, inventory_sha256: str) -> dict[str, object]
     if any(role not in roles for role in ("ledger_source", "copied_test", "attribution")):
         raise IntakeRefusal("source_copied_test_and_attribution_inventory_required")
     observed: set[str] = set()
+    expected_directories = {
+        parent.as_posix()
+        for name in names
+        for parent in PurePosixPath(name).parents
+        if parent.as_posix() != "."
+    }
     # Inspect names only for omitted entries; unlisted file contents are never read.
     for directory, subdirs, files in os.walk(stage, followlinks=False):
         for name in subdirs:
@@ -141,6 +147,8 @@ def inspect_staged(staged_root: str, inventory_sha256: str) -> dict[str, object]
             _no_links(child)
             if name.startswith(".") or name.casefold() in _FORBIDDEN:
                 raise IntakeRefusal("forbidden_staged_directory")
+            if child.relative_to(stage).as_posix() not in expected_directories:
+                raise IntakeRefusal("directory_outside_inventory_closure")
         for name in files:
             child = Path(directory) / name
             _no_links(child)
@@ -153,7 +161,7 @@ def inspect_staged(staged_root: str, inventory_sha256: str) -> dict[str, object]
     total = 0
     for name, expected, _ in entries:
         path = _bounded_path(stage.joinpath(*PurePosixPath(name).parts), checkout)
-        data = _read(path, MAX_FILE_BYTES)
+        data = _read(path, min(MAX_FILE_BYTES, MAX_TOTAL_BYTES - total))
         total += len(data)
         if total > MAX_TOTAL_BYTES:
             raise IntakeRefusal("total_staged_bytes_exceed_bound")
