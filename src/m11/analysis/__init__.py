@@ -132,6 +132,7 @@ def analyze_export(payload: Any) -> dict:
         known = Decimal(0)
         unpriced_reported = Decimal(0)
         failure_cost = Decimal(0)
+        priced_estimates = unpriced_estimates = failure_estimates = 0
         unknown_costs = 0
         for attempt in members:
             cost = costs.get(attempt["attempt_id"])
@@ -140,10 +141,13 @@ def analyze_export(payload: Any) -> dict:
                 unknown_costs += 1
             if value is not None and cost.get("pricetable_sha256"):
                 known += value
+                priced_estimates += 1
                 if any(row["cell_id"] == attempt["cell_id"] and row["disposition"] == "fail" for row in rows):
                     failure_cost += value
+                    failure_estimates += 1
             elif value is not None:
                 unpriced_reported += value
+                unpriced_estimates += 1
         counts = {name: sum(row["disposition"] == name for row in rows) for name in ("pass", "fail", "evaluator_error", "infra_excluded", "unknown", "unstarted")}
         missing = counts["evaluator_error"] + counts["infra_excluded"] + counts["unknown"] + counts["unstarted"]
         solved_tasks = {row["task_id"] for row in rows if row["disposition"] == "pass"}
@@ -157,9 +161,13 @@ def analyze_export(payload: Any) -> dict:
             "distinct_tasks_solved": len(solved_tasks), "solved_task_ids": sorted(solved_tasks),
             "success_over_planned": counts["pass"] / len(rows),
             "missingness_bounds": [counts["pass"] / len(rows), (counts["pass"] + missing) / len(rows)],
-            "known_estimated_subtotal_usd": str(known), "unknown_cost_attempts": unknown_costs,
-            "unpriced_reported_subtotal_usd": str(unpriced_reported),
-            "known_failure_estimated_subtotal_usd": str(failure_cost),
+            "known_estimated_subtotal_usd": str(known) if priced_estimates else None,
+            "known_estimated_subtotal_reason": None if priced_estimates else "no_priced_estimates",
+            "unknown_cost_attempts": unknown_costs,
+            "unpriced_reported_subtotal_usd": str(unpriced_reported) if unpriced_estimates else None,
+            "unpriced_reported_subtotal_reason": None if unpriced_estimates else "no_unpriced_reported_estimates",
+            "known_failure_estimated_subtotal_usd": str(failure_cost) if failure_estimates else None,
+            "known_failure_estimated_subtotal_reason": None if failure_estimates else "no_priced_failure_estimates",
             "usage_cost_coverage": (len(members) - unknown_costs) / len(members) if members else None,
             "cost_per_pass_usd": None if economic_reason else str(known / counts["pass"]),
             "cost_per_distinct_task_usd": None if economic_reason else str(known / len(solved_tasks)),
