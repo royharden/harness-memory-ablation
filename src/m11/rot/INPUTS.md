@@ -51,14 +51,20 @@ arm-dependent denominator. It never contributes to baseline rot.
 `claim_drift(claims)` requires a mapping with exactly two keys:
 
 * `registered`: list of exactly four mappings, each with `claim_id` (unique
-  nonempty string), `source_anchor` (nonempty string or null), `present` (bool),
+  nonempty string), `anchor_present` (bool or null), `present` (bool or null),
   and `outcome` (`pass`, `fail`, `unknown`).
 * `unregistered`: list of unique nonempty addition IDs, disjoint from registered
   IDs. These additions are listed and never scored.
 
-`present=false` records deletion; a null source anchor records a missing anchor.
-Either counts as failure regardless of outcome. Otherwise an unknown outcome
-suppresses the point estimate and exposes bounds with denominator four. The
+`present=false` records observed deletion; `anchor_present=false` records an
+observed missing anchor. Either counts as failure regardless of unknown fields;
+an observed failing test also establishes failure. Otherwise any unknown presence,
+anchor or test observation suppresses the point estimate and exposes bounds with
+denominator four. Null never means deleted or missing anchor. The
 caller supplies deterministic test outcomes; no text/model judgment is used.
 Unexpected fields, duplicate IDs, invalid state values and malformed types raise
 TypeError/ValueError rather than becoming numeric zero.
+
+This normalized input is the exact export/2 PublicClaim adapter shape; no source
+path or invented anchor string is needed. Older source_anchor inputs are not an
+alternate accepted shape. The frozen claim-drift/1 arithmetic is unchanged.
