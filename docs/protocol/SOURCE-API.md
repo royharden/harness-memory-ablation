@@ -38,6 +38,9 @@ receipt reference/hash. Every longitudinal cell retains its four frozen register
 IDs in order, even when all observations are unknown. IDs alone are not observed
 presence/deletion/test results. Unregistered IDs may be transported only with
 `registered=false` and remain outside the fixed denominator four.
+Campaign reference IDs reuse `harnessrun.models.Identifier` directly, including
+its 256-character and no-control-character constraints, rather than permitting
+IDs that the shared grading join would refuse.
 Registration and observations use the same `ClaimIdentifier`: 1–256 ASCII token
 characters, first alphanumeric then alphanumeric/dot/underscore/hyphen. This
 intentionally excludes whitespace, control characters, path/URI delimiters and

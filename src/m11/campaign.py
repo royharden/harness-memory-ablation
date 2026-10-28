@@ -21,8 +21,8 @@ from harnessrun import (
     sha256_json,
     strict_json,
 )
+from harnessrun.models import Identifier
 
-Identifier = Annotated[str, Field(min_length=1, max_length=256)]
 ClaimIdentifier = Annotated[str, Field(min_length=1, max_length=256, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")]
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Money = Annotated[str, Field(pattern=r"^(0|[1-9][0-9]*)(\.[0-9]+)?$")]
