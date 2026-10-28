@@ -69,9 +69,13 @@ class MetadataStore:
     def _connection(self, *, create: bool = False) -> Iterator[sqlite3.Connection]:
         # mode=rw prevents a read or ordinary write from creating an empty DB.
         uri = self.path.as_uri() + ("?mode=rwc" if create else "?mode=rw")
-        connection = sqlite3.connect(uri, uri=True, isolation_level=None)
+        connection = sqlite3.connect(uri, uri=True, isolation_level=None, timeout=1.0)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
+        # Bound SQLite lock waiting and request durable commits. These settings
+        # are source requirements, not a claim about an untested filesystem.
+        connection.execute("PRAGMA busy_timeout = 1000")
+        connection.execute("PRAGMA synchronous = FULL")
         try:
             yield connection
         finally:
@@ -98,6 +102,8 @@ class MetadataStore:
             "CREATE TABLE IF NOT EXISTS lifecycle (attempt_id TEXT PRIMARY KEY, cell_id TEXT NOT NULL UNIQUE REFERENCES cells(cell_id), state TEXT NOT NULL CHECK(state IN ('claimed','running','cleanup_pending','finished')), begin_sha256 TEXT, cleanup_receipt_sha256 TEXT)",
             "CREATE TABLE IF NOT EXISTS checkpoints (trajectory_id TEXT NOT NULL, checkpoint INTEGER NOT NULL CHECK(checkpoint BETWEEN 1 AND 12), cell_id TEXT NOT NULL REFERENCES cells(cell_id), payload TEXT NOT NULL, sha256 TEXT NOT NULL, PRIMARY KEY(trajectory_id, checkpoint))",
             "CREATE TABLE IF NOT EXISTS trajectory_states (trajectory_id TEXT NOT NULL, revision INTEGER NOT NULL, previous_sha256 TEXT, payload TEXT NOT NULL, sha256 TEXT NOT NULL, PRIMARY KEY(trajectory_id, revision), UNIQUE(trajectory_id, sha256))",
+            "CREATE TABLE IF NOT EXISTS launch_journal (claim_id TEXT PRIMARY KEY, attempt_id TEXT NOT NULL UNIQUE REFERENCES lifecycle(attempt_id), launch_id TEXT NOT NULL UNIQUE, cell_id TEXT NOT NULL UNIQUE REFERENCES cells(cell_id), payload TEXT NOT NULL, sha256 TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS launch_journal_events (claim_id TEXT NOT NULL REFERENCES launch_journal(claim_id), kind TEXT NOT NULL CHECK(kind IN ('spawn_intent','started','cleanup_pending','finished')), payload TEXT NOT NULL, sha256 TEXT NOT NULL, PRIMARY KEY(claim_id, kind))",
         )
         with self._transaction(create=True) as connection:
             for statement in statements:
@@ -198,6 +204,8 @@ class MetadataStore:
     def finish_attempt(self, attempt_id: str) -> None:
         """Finish only with a stored result; cleanup_pending keeps the serial lock."""
         with self._transaction() as connection:
+            if connection.execute("SELECT 1 FROM launch_journal WHERE attempt_id=?", (attempt_id,)).fetchone():
+                raise DispatchBlocked("archived launch requires unavailable external lease/M9 reconciliation; retain cleanup lock")
             row = connection.execute("SELECT payload, sha256 FROM attempts WHERE attempt_id=?", (attempt_id,)).fetchone()
             if row is None or row["sha256"] != _hash(row["payload"]):
                 raise StoreConflict("a hash-valid immutable attempt is required")
@@ -216,9 +224,89 @@ class MetadataStore:
         """Attach cleanup proof without rewriting the original attempt outcome."""
         _digest(receipt_sha256)
         with self._transaction() as connection:
+            if connection.execute("SELECT 1 FROM launch_journal WHERE attempt_id=?", (attempt_id,)).fetchone():
+                raise DispatchBlocked("receipt digest cannot resolve archived launch ownership/M9 liability")
             changed = connection.execute("UPDATE lifecycle SET state='finished', cleanup_receipt_sha256=? WHERE attempt_id=? AND state='cleanup_pending'", (receipt_sha256, attempt_id)).rowcount
             if changed != 1:
                 raise StoreConflict("no pending cleanup for attempt")
+
+    def record_launch_claim(self, *, claim_id: str, attempt_id: str,
+                            launch_id: str, cell_id: str, payload: str) -> None:
+        """Archive an externally authenticated claim, NOT atomically begin M9.
+
+        Authentication belongs to the injected journal authority. This local
+        transaction cannot prove or perform a cross-ledger atomic claim. Replay
+        is an exact archival no-op; it never returns dispatch permission.
+        """
+        if not all((claim_id, attempt_id, launch_id, cell_id, payload)):
+            raise StoreConflict("complete launch journal binding required")
+        with self._transaction() as connection:
+            old = connection.execute("SELECT * FROM launch_journal WHERE claim_id=? OR attempt_id=? OR launch_id=? OR cell_id=?",
+                (claim_id, attempt_id, launch_id, cell_id)).fetchall()
+            if old:
+                if len(old) != 1 or tuple(old[0][key] for key in ("claim_id", "attempt_id", "launch_id", "cell_id")) != (claim_id, attempt_id, launch_id, cell_id):
+                    raise StoreConflict("launch claim identity is already consumed")
+                self._same(old[0], payload)
+                return
+            cell = self._cell(connection, cell_id)
+            if cell.attempt_id is not None and cell.attempt_id != attempt_id:
+                raise StoreConflict("launch claim differs from frozen cell")
+            if connection.execute("SELECT 1 FROM lifecycle WHERE state != 'finished' AND attempt_id != ? LIMIT 1", (attempt_id,)).fetchone():
+                raise DispatchBlocked("another unresolved lifecycle blocks recovered launch claim")
+            lifecycle = connection.execute("SELECT * FROM lifecycle WHERE attempt_id=? OR cell_id=?", (attempt_id, cell_id)).fetchall()
+            if lifecycle:
+                if len(lifecycle) != 1 or lifecycle[0]["attempt_id"] != attempt_id or lifecycle[0]["cell_id"] != cell_id or lifecycle[0]["state"] != "claimed" or lifecycle[0]["begin_sha256"] is not None:
+                    raise DispatchBlocked("existing lifecycle cannot admit a recovered launch claim")
+            else:
+                if connection.execute("SELECT 1 FROM lifecycle WHERE state != 'finished' LIMIT 1").fetchone():
+                    raise DispatchBlocked("unresolved lifecycle blocks recovered launch claim")
+                connection.execute("INSERT INTO lifecycle VALUES (?,?,'claimed',NULL,NULL)", (attempt_id, cell_id))
+            connection.execute("INSERT INTO launch_journal VALUES (?,?,?,?,?,?)",
+                (claim_id, attempt_id, launch_id, cell_id, payload, _hash(payload)))
+
+    def get_launch_claim(self, claim_id: str) -> str | None:
+        """Return exact private archival bytes; no authority follows from them."""
+        with self._connection() as connection:
+            row = connection.execute("SELECT payload,sha256 FROM launch_journal WHERE claim_id=?", (claim_id,)).fetchone()
+        if row is None:
+            return None
+        if row["sha256"] != _hash(row["payload"]):
+            raise StoreConflict("launch claim hash mismatch")
+        return str(row["payload"])
+
+    def record_launch_event(self, claim_id: str, binding_payload: str,
+                            kind: Literal["spawn_intent", "started", "cleanup_pending", "finished"],
+                            payload: str) -> None:
+        """Append exact immutable event and conservative lifecycle atomically.
+
+        Even an authenticated terminal receipt leaves cleanup_pending here:
+        this adapter has no admitted live lease/reconciliation contract. It
+        cannot unlock scheduling or settle liability using an archived receipt.
+        """
+        if kind not in ("spawn_intent", "started", "cleanup_pending", "finished"):
+            raise StoreConflict("unknown launch journal event")
+        with self._transaction() as connection:
+            claim = connection.execute("SELECT * FROM launch_journal WHERE claim_id=?", (claim_id,)).fetchone()
+            if claim is None or not self._same(claim, binding_payload):
+                raise StoreConflict("unknown launch claim")
+            events = connection.execute("SELECT kind,payload,sha256 FROM launch_journal_events WHERE claim_id=?", (claim_id,)).fetchall()
+            previous = {row["kind"]: row for row in events}
+            for row in events:
+                if row["sha256"] != _hash(row["payload"]):
+                    raise StoreConflict("launch event hash mismatch")
+            if kind in previous:
+                self._same(previous[kind], payload)
+                return
+            if "finished" in previous or (kind == "started" and ("spawn_intent" not in previous or "cleanup_pending" in previous)) or (kind == "spawn_intent" and previous):
+                raise StoreConflict("launch event violates immutable lifecycle order")
+            connection.execute("INSERT INTO launch_journal_events VALUES (?,?,?,?)", (claim_id, kind, payload, _hash(payload)))
+            # No acknowledged start can erase the pre-spawn crash ambiguity
+            # from durable history; unresolved cleanup always keeps the lock.
+            state = "running" if kind == "started" else "cleanup_pending"
+            changed = connection.execute("UPDATE lifecycle SET state=?,begin_sha256=COALESCE(begin_sha256,?) WHERE attempt_id=? AND state != 'finished'",
+                (state, claim["sha256"], claim["attempt_id"])).rowcount
+            if changed != 1:
+                raise StoreConflict("launch event lost its unresolved lifecycle")
 
     def record_checkpoint(self, checkpoint: TrajectoryCheckpoint) -> None:
         """Append an immutable terminal checkpoint snapshot, including unknowns."""
