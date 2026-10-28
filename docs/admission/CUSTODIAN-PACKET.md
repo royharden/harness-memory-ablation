@@ -55,3 +55,25 @@ Serializer/signing scheme and appointments remain unresolved external work. The
 source gate verifier must bind finalized receipt digest, role, appointment and signed
 evidence; an always-true callback, handwritten name or builder signature is not proof.
 No independent expected-answer worksheet is included.
+
+## External grading to public source join (r4)
+
+Deliver exact approved suite/task/seed/checkpoint-to-opaque-grader mappings with
+content digests, not source paths or guessed IDs. The stdlib evaluation registration
+bridge consumes canonical accepted producer records with a real caller graph verifier,
+separate independent gate verification and isolated grading authority. No verifier is
+appointed/implemented by this packet. Finalized external receipts must bind the full
+current m11-grade-plan/2 digest, including the registered grading binding, exact suite,
+attempt, artifact and grader. Historical source plan/1 is not implicitly converted.
+
+For the future public claim path, supply actual observed presence, required-anchor
+state and deterministic claim-test outcome per registered claim, with explicit unknown
+reasons when not observed. Preserve four ordered registered IDs and distinguish
+actual deletion/missing anchor from unavailable observation. Bind campaign, seed,
+trajectory/checkpoint, cell, attempt, candidate artifact, immutable grader and grading
+receipt. Never copy hidden assertion text, expected values, source paths or answers
+into public records. DL3 owns exact m11-public-claim/1 fields and m11-export/2;
+the public producer must validate them, with no legacy/default-empty adaptation.
+This packet authors no observation and releases no result; frozen-final-analysis
+embargo, current literal-false independent eligibility and separate rights approval
+remain intact.

@@ -37,3 +37,28 @@ wrong patches fail, three-run stability and isolation; each reference passes acc
 features/tripwires and registered claim expectations. Any actual dev ceiling/floor
 triggers documented redesign/calibration, never heldout selection or resampling.
 Heldout growth sd(dev)>.55 =>48 remains prospective; if unaffordable, stop, never shrink.
+
+## Actual public suite join (source r4)
+
+The authoring manifests are private development inventories, not serialized public
+SuiteManifest objects. Their class labels map explicitly:
+memory-independent -> independent; decision-dependent -> decision;
+misleading-memory -> misleading. Do not treat spelling similarity as wire identity.
+A future admitted materializer supplies actual suite_id/task_id/task_sha256 and unique
+opaque_task_id, retaining family/split and exact source hashes in custody evidence.
+
+Seed manifest ordinal maps to SeedCheckpoint.checkpoint, and feature_path/reference_paths
+are source inventory paths, not public IDs or reference digests. The future frozen
+mapping assigns exact seed_id/seed_sha256, feature_id, execution task_id/task_sha256,
+opaque_task_id, reference_sha256 or explicit reference_missing_reason for each1..12.
+SuiteSeed.tripwire_ids/claim_ids remain the four ordered registered IDs.
+No placeholder hashes or independent claims are created from these filenames.
+
+claims/registry.json and checkpoint claim_expectations describe builder-authored
+expected dev behavior. They are NOT observed claim state. Upcoming public
+m11-export/2 claim_observations uses DL3-owned closed m11-public-claim/1 records from
+actual externally authenticated grading. Presence, anchor and test outcome are
+bool-or-null with unavailable reasons, never inferred from a registered ID or
+expected=true. Unknowns stay unavailable, unregistered additions unscored, denominator4.
+Mode, candidate/attempt/cell/seed/checkpoint and receipt provenance must resolve.
+Current independent eligibility and MEASURED result-embargo restrictions remain.

@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 from .admission import GateContext, assess_gate
 from .formats import Refusal, closed, digest, parse_json, read_bound, sha256, text
+from .wire import identifier, wire_text
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,7 @@ class GradeRequest:
     grader_sha256: str
     suite_sha256: str
     split: str
+    registration_binding_sha256: str
 
 
 @dataclass(frozen=True)
@@ -37,15 +39,15 @@ def prepare_grade(request: GradeRequest, *, authority: GradingAuthority,
                   full_context: GateContext | None = None) -> dict[str, Any]:
     """Return data for a future approved offline grader, never execute/import it."""
     for field in ("attempt_id", "opaque_task_id"):
-        text(getattr(request, field), field)
-    for field in ("artifact_sha256", "grader_sha256", "suite_sha256"):
+        identifier(getattr(request, field), field)
+    for field in ("artifact_sha256", "grader_sha256", "suite_sha256", "registration_binding_sha256"):
         digest(getattr(request, field), field)
-    if request.split not in {"dev", "heldout"}:
+    if request.split not in {"dev", "heldout", "diagnostic"}:
         raise Refusal("grading split not admitted")
     p0 = assess_gate(p0_raw, root=p0_root, context=p0_context)
     if p0.decision != "PASS" or p0.gate_kind != "P0":
         raise Refusal("independent P0 unavailable")
-    if request.split == "heldout":
+    if request.split in {"heldout", "diagnostic"}:
         full = assess_gate(full_raw, root=full_root, context=full_context)
         if full.decision != "PASS" or full.gate_kind != "full_pack":
             raise Refusal("independent full-pack admission unavailable")
@@ -59,7 +61,8 @@ def prepare_grade(request: GradeRequest, *, authority: GradingAuthority,
     if len({row[0] for row in authority.frozen_mapping}) != len(authority.frozen_mapping):
         raise Refusal("ambiguous frozen grading mapping")
     return {
-        "schema_version": "m11-grade-plan/1",
+        "schema_version": "m11-grade-plan/2",
+        "registration_binding_sha256": request.registration_binding_sha256,
         "attempt_id": request.attempt_id, "artifact_sha256": request.artifact_sha256,
         "opaque_task_id": request.opaque_task_id, "grader_sha256": request.grader_sha256,
         "suite_sha256": request.suite_sha256, "offline_image_sha256": image,
@@ -70,7 +73,7 @@ def prepare_grade(request: GradeRequest, *, authority: GradingAuthority,
 
 
 def grade_plan_sha256(plan: dict[str, Any]) -> str:
-    """m11-grade-plan/1 digest over UTF-8 canonical JSON, without a self-hash field."""
+    """m11-grade-plan/2 digest over UTF-8 canonical JSON, without a self-hash field."""
     return sha256(json.dumps(plan, sort_keys=True, separators=(",", ":"),
                              ensure_ascii=False, allow_nan=False).encode("utf-8"))
 
@@ -86,13 +89,13 @@ def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
     closed(plan, {"schema_version", "attempt_id", "artifact_sha256", "opaque_task_id",
                   "grader_sha256", "suite_sha256", "offline_image_sha256",
                   "isolation_evidence_sha256", "network", "candidate_mount",
-                  "hidden_grader_mount", "disposition"}, "grade plan")
-    if plan["schema_version"] != "m11-grade-plan/1":
+                  "hidden_grader_mount", "disposition", "registration_binding_sha256"}, "grade plan")
+    if plan["schema_version"] != "m11-grade-plan/2":
         raise Refusal("unknown grade plan")
     for field in ("attempt_id", "opaque_task_id"):
-        text(plan[field], field)
+        identifier(plan[field], field)
     for field in ("artifact_sha256", "grader_sha256", "suite_sha256",
-                  "offline_image_sha256", "isolation_evidence_sha256"):
+                  "offline_image_sha256", "isolation_evidence_sha256", "registration_binding_sha256"):
         digest(plan[field], field)
     fixed = {"network": "disabled", "candidate_mount": "immutable_read_only",
              "hidden_grader_mount": "grader_only", "disposition": "PLAN_ONLY_NOT_EXECUTED"}
@@ -108,7 +111,7 @@ def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
             raise Refusal("external grading observation binding differs")
     if observation["verdict"] not in {"pass", "fail", "evaluator_error"}:
         raise Refusal("unknown grader verdict")
-    text(observation["receipt_ref"], "grading receipt")
+    wire_text(observation["receipt_ref"], "grading receipt")
     raw = read_bound(receipt_root, receipt_path,
                      digest(observation["receipt_sha256"], "grading receipt hash"))
     if verify_receipt(raw) is not True:
