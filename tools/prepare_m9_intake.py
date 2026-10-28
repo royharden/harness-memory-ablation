@@ -44,23 +44,34 @@ def _no_links(path: Path) -> None:
         raise IntakeRefusal("symlink_or_junction_not_allowed")
 
 
+def _exact_relative_parts(candidate: Path, root: Path) -> tuple[str, ...]:
+    # WindowsPath containment folds case even when NTFS has distinct sensitive
+    # sibling directories. Compare actual component strings conservatively;
+    # relative caller paths already inherit the trusted canonical root casing.
+    prefix = root.parts
+    parts = candidate.parts
+    if len(parts) < len(prefix) or parts[:len(prefix)] != prefix:
+        raise IntakeRefusal("exact_checkout_root_components_required")
+    return parts[len(prefix):]
+
+
 def _bounded_path(candidate: Path, root: Path) -> Path:
     # Reject lexically before resolving, so an arbitrary path cannot be used to
     # explore another application's files. Check every allowed ancestor too.
-    if ".." in candidate.parts or not candidate.is_absolute() or not candidate.is_relative_to(root):
+    if ".." in candidate.parts or not candidate.is_absolute():
         raise IntakeRefusal("path_outside_explicit_checkout_boundary")
+    relative_parts = _exact_relative_parts(candidate, root)
     current = root
-    for part in candidate.relative_to(root).parts:
+    for part in relative_parts:
         if _forbidden_component(part):
             raise IntakeRefusal("hidden_or_credential_ancestor_forbidden")
         current /= part
         _no_links(current)
     resolved = candidate.resolve(strict=True)
-    if not resolved.is_relative_to(root):
-        raise IntakeRefusal("resolved_path_outside_checkout")
+    resolved_parts = _exact_relative_parts(resolved, root)
     # Canonical components must also pass; an alternate filesystem spelling is
     # not permission to read a forbidden root through a different visible name.
-    if any(_forbidden_component(part) for part in resolved.relative_to(root).parts):
+    if any(_forbidden_component(part) for part in resolved_parts):
         raise IntakeRefusal("resolved_hidden_or_credential_ancestor_forbidden")
     return resolved
 
