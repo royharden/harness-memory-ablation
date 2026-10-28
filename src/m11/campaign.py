@@ -21,8 +21,9 @@ from harnessrun import (
     sha256_json,
     strict_json,
 )
+from harnessrun.models import Identifier
 
-Identifier = Annotated[str, Field(min_length=1, max_length=256)]
+ClaimIdentifier = Annotated[str, Field(min_length=1, max_length=256, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")]
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Money = Annotated[str, Field(pattern=r"^(0|[1-9][0-9]*)(\.[0-9]+)?$")]
 TaskClass = Literal["independent", "decision", "misleading"]
@@ -107,7 +108,7 @@ class SuiteSeed(ClosedModel):
     seed_sha256: Digest
     split: Literal["dev", "heldout"]
     tripwire_ids: Annotated[tuple[Identifier, ...], Field(min_length=4, max_length=4)]
-    claim_ids: Annotated[tuple[Identifier, ...], Field(min_length=4, max_length=4)]
+    claim_ids: Annotated[tuple[ClaimIdentifier, ...], Field(min_length=4, max_length=4)]
     checkpoints: tuple[SeedCheckpoint, ...]
 
     @model_validator(mode="after")
@@ -375,8 +376,49 @@ class ResultEligibility(ClosedModel):
     unavailable_reason: Identifier
 
 
+class PublicClaim(ClosedModel):
+    """Observed claim state only; contains no assertion text or expected answer."""
+
+    schema_version: Literal["m11-public-claim/1"] = "m11-public-claim/1"
+    campaign_id: Identifier
+    trajectory_id: Identifier
+    seed_id: Identifier
+    checkpoint: Annotated[int, Field(ge=1, le=12)]
+    cell_id: Identifier
+    attempt_id: Identifier | None
+    candidate_sha256: Digest | None
+    claim_id: ClaimIdentifier
+    registered: bool
+    present: bool | None
+    presence_missing_reason: Identifier | None
+    anchor_present: bool | None
+    anchor_missing_reason: Identifier | None
+    test_passed: bool | None
+    test_missing_reason: Identifier | None
+    grader_sha256: Digest | None
+    receipt_ref: Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,255}$")] | None
+    receipt_sha256: Digest | None
+
+    @model_validator(mode="after")
+    def observed_claim(self) -> Self:
+        for value, reason in (
+            (self.present, self.presence_missing_reason),
+            (self.anchor_present, self.anchor_missing_reason),
+            (self.test_passed, self.test_missing_reason),
+        ):
+            if (value is None) != (reason is not None):
+                raise ValueError("unknown claim observation needs a reason; known observation has none")
+        proof = (self.grader_sha256, self.receipt_ref, self.receipt_sha256)
+        if any(v is not None for v in proof) and not all(v is not None for v in proof):
+            raise ValueError("claim grader/receipt provenance must be complete or absent")
+        observed = any(v is not None for v in (self.present, self.anchor_present, self.test_passed))
+        if observed and (not self.attempt_id or not self.candidate_sha256 or not all(v is not None for v in proof)):
+            raise ValueError("observed claim needs exact attempt/candidate and immutable grader receipt")
+        return self
+
+
 class PublicExport(ClosedModel):
-    schema_version: Literal["m11-export/1"] = "m11-export/1"
+    schema_version: Literal["m11-export/2"] = "m11-export/2"
     campaign_id: Identifier
     mode: Mode
     experiment_kind: Literal["task", "longitudinal", "calibration", "probe", "system_comparison"]
@@ -393,6 +435,7 @@ class PublicExport(ClosedModel):
     limitations: tuple[Limitation, ...]
     cost_observations: tuple[CostObservation, ...]
     trajectory_checkpoints: tuple[PublicCheckpoint, ...]
+    claim_observations: tuple[PublicClaim, ...]
 
     @model_validator(mode="after")
     def resolved_export(self) -> Self:
@@ -411,6 +454,8 @@ class PublicExport(ClosedModel):
             raise ValueError("simulation eligibility must stay descriptive")
         if self.mode == "MEASURED" and (self.eligibility.result_release_state == "simulated_descriptive" or self.grades or any(c.feature_completed is not None or any(v is not None for v in c.tripwire_outcomes) for c in self.trajectory_checkpoints)):
             raise ValueError("measured hidden outcomes remain embargoed; release verification is unavailable")
+        if self.mode == "MEASURED" and any(any(v is not None for v in (c.present, c.anchor_present, c.test_passed)) for c in self.claim_observations):
+            raise ValueError("measured claim observations remain embargoed; release verification is unavailable")
         cells = {c.cell_id: c for c in self.planned_cells}
         _unique(list(self.eligibility.release_scope_cell_ids), "release scope cell")
         if any(ref not in cells for ref in self.eligibility.release_scope_cell_ids):
@@ -529,6 +574,31 @@ class PublicExport(ClosedModel):
             for previous, current in zip(points, points[1:]):
                 if current.status in ("produced", "paused", "workspace_lost") and (current.source_before_sha256, current.memory_before_sha256) != (previous.source_after_sha256, previous.memory_after_sha256):
                     raise ValueError("public trajectory source/memory carry diverges")
+        _unique([f"{c.cell_id}:{c.claim_id}" for c in self.claim_observations], "cell claim observation")
+        points_by_cell = {p.cell_id: p for p in self.trajectory_checkpoints}
+        registered_by_cell: dict[str, list[str]] = {key: [] for key in points_by_cell}
+        for claim in self.claim_observations:
+            point = points_by_cell.get(claim.cell_id)
+            if point is None or (claim.campaign_id, claim.trajectory_id, claim.seed_id, claim.checkpoint, claim.attempt_id, claim.candidate_sha256) != (point.campaign_id, point.trajectory_id, point.seed_id, point.checkpoint, point.attempt_id, point.source_after_sha256):
+                raise ValueError("claim observation does not bind the exact checkpoint/candidate")
+            seed = next(s for s in self.suite.seeds if s.seed_id == claim.seed_id)
+            if claim.registered != (claim.claim_id in seed.claim_ids):
+                raise ValueError("claim registration classification differs from frozen four-claim set")
+            if claim.registered:
+                registered_by_cell[claim.cell_id].append(claim.claim_id)
+            observed = any(v is not None for v in (claim.present, claim.anchor_present, claim.test_passed))
+            if observed or claim.receipt_sha256 is not None:
+                grade = grades.get(claim.attempt_id)
+                if grade is None or (claim.candidate_sha256, claim.grader_sha256, claim.receipt_ref, claim.receipt_sha256) != (grade.artifact_sha256, grade.grader_sha256, grade.receipt_ref, grade.receipt_sha256):
+                    raise ValueError("claim grading provenance is unresolved or mismatched")
+                if grade.verdict == "evaluator_error" and claim.test_passed is not None:
+                    raise ValueError("trusted evaluator error cannot supply a known claim test result")
+            if point.status in ("planned", "unknown", "workspace_lost") and observed:
+                raise ValueError("unobserved checkpoint cannot fabricate claim presence/anchor/test")
+        for cell_id, point in points_by_cell.items():
+            seed = next(s for s in self.suite.seeds if s.seed_id == point.seed_id)
+            if tuple(registered_by_cell[cell_id]) != seed.claim_ids:
+                raise ValueError("every longitudinal cell requires four ordered registered claim observations, including unknowns")
         return self
 
 
@@ -538,6 +608,11 @@ def parse_export(payload: str | bytes | dict[str, Any]) -> PublicExport:
     decoded = strict_json(raw)
     if not isinstance(decoded, dict):
         raise ValueError("public export must be an object")
+    if decoded.get("schema_version") != "m11-export/2":
+        raise ValueError("unsupported_export_version: expected m11-export/2; no implicit v1 conversion")
+    claims = decoded.get("claim_observations")
+    if not isinstance(claims, list) or any(not isinstance(c, dict) or c.get("schema_version") != "m11-public-claim/1" for c in claims):
+        raise ValueError("required explicitly versioned claim_observations array missing or invalid")
     # Shared constructors have Python defaults for these literals. Embedded
     # wire records still must state them explicitly, as parse_record requires.
     record_types = {
