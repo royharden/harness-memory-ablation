@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 from harnessrun import AttemptSpec, CapabilityRecord, ContractError, LaunchSpec, Mount, canonical_json, sha256_bytes
 from harnessrun.models import Identifier, SHA256
+from .configuration import require_no_placeholders
 
 
 def _absolute(path: str) -> str:
@@ -243,6 +244,7 @@ def confirm_execution_permission(attempt: AttemptSpec, launch: LaunchSpec, polic
                                  delivery: TaskDelivery, permit: RuntimePermit,
                                  verifier: RuntimeVerifier) -> RuntimeAttestation:
     """Bind an exact request then ask the trusted authority; hashes alone never pass."""
+    require_no_placeholders((attempt, launch, policy, permit))
     validate_workspace(attempt, launch, policy)
     if (delivery.task_id, delivery.task_sha256) != (attempt.task_id, attempt.task_sha256):
         raise RuntimeVerificationUnavailable("task delivery does not bind scheduled execution item")
@@ -284,6 +286,7 @@ class PreparationAuthorization:
 def confirm_native_preparation(attempt: AttemptSpec, launch: LaunchSpec,
                                authorization: PreparationAuthorization,
                                cli_version: str) -> None:
+    require_no_placeholders((authorization.capabilities, authorization.permit, authorization.policy))
     capability = authorization.capabilities
     if (capability.harness_id, capability.cli_version, capability.binary_sha256,
         capability.image_sha256, capability.provider_config_sha256, capability.settings_sha256) != (

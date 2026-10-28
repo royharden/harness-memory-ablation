@@ -1,0 +1,9 @@
+{
+  "schema_version": "m11-activation-template/1",
+  "operational": false,
+  "harness_id": "claude",
+  "model_pin": "<PLACEHOLDER_MODEL_PIN>",
+  "account_id": "<PLACEHOLDER_ACCOUNT_ID>",
+  "endpoint_profile_id": "<PLACEHOLDER_ENDPOINT_PROFILE_ID>",
+  "credential_environment_name": "M11_PROVIDER_API_KEY"
+}

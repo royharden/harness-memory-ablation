@@ -10,6 +10,7 @@ from harnessrun import (
     AttemptSpec, CapabilityRecord, ContractError, HarnessEvent, LaunchSpec,
     ModelEvidence, Mount, ProviderConfig, UsageObservation, canonical_json, sha256_bytes,
 )
+from ..configuration import ConfigurationRefusal, require_no_placeholders
 
 
 class PreparationContext(BaseModel):
@@ -59,6 +60,11 @@ class AdapterBase:
         return capability(self.harness_id, self.context, self.settings_sha256, self.simulated)
 
     def _validate(self, spec: AttemptSpec) -> None:
+        if not self.simulated:
+            try:
+                require_no_placeholders((self.context, self.settings_sha256, spec))
+            except ConfigurationRefusal:
+                raise NativePreparationRefused("native preparation refuses unresolved named placeholders") from None
         if spec.harness_id != self.harness_id:
             raise ContractError("adapter harness_id mismatch")
         if spec.provider_config_sha256 != sha256_bytes(canonical_json(self.context.provider)):

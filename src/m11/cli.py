@@ -22,6 +22,10 @@ def _parser() -> argparse.ArgumentParser:
     report = commands.add_parser("report")
     report.add_argument("input", type=Path)
     report.add_argument("--format", choices=("html", "markdown", "json"), default="html")
+    configuration = commands.add_parser("configuration")
+    configuration_commands = configuration.add_subparsers(dest="operation", required=True)
+    configuration_check = configuration_commands.add_parser("check")
+    configuration_check.add_argument("input", type=Path)
     for name in ("admit", "intake", "treat", "probe", "run"):
         commands.add_parser(name)
     for name, operations in (("suite", ("validate",)), ("long", ("run",)),
@@ -66,12 +70,32 @@ def _refusal(command: str, reason: str) -> int:
     return 3
 
 
+def _inspect_activation_file(path: Path) -> dict:
+    from .configuration import inspect_activation_template
+
+    allowed_names = {"activation.example.json", "activation.template.json", "activation.json"}
+    forbidden_parts = {".env", ".ssh", ".aws", "auth", "credentials", "tokens"}
+    if path.name.lower() not in allowed_names or any(part.lower() in forbidden_parts for part in path.parts):
+        raise ContractError("an explicitly named non-secret activation JSON template is required")
+    if path.is_symlink():
+        raise ContractError("activation template symlink is refused")
+    with path.open("rb") as stream:
+        raw = stream.read(64 * 1024 + 1)
+    return inspect_activation_template(raw).model_dump(mode="json")
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     if args.command == "status":
         print(json.dumps({"status": "source construction; runtime-unverified",
             "p0": "PENDING", "native_dispatch": "refused", "spend_authorized_usd": "0"}))
         return 0
+    if args.command == "configuration":
+        try:
+            print(json.dumps(_inspect_activation_file(args.input), sort_keys=True, allow_nan=False))
+            return 3  # Inspection never activates a template, even after fields are filled.
+        except (ContractError, ValueError, TypeError, OSError):
+            return _refusal("configuration", "activation template refused; only non-secret metadata is permitted")
     # Source permission is never confused with permission to execute the instrument.
     if args.command not in {"demo", "analyze", "report"}:
         return _refusal(args.command, "P0/runtime activation unavailable; consumer command integration pending")
