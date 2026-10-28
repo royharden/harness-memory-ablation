@@ -127,3 +127,26 @@ m11-public-claim/1 are owned by DL3. Registered claim IDs and builder reference
 expectations never manufacture observed presence/anchor/test state. Consume their
 actual published versioned DTO through the public producer, not shape fallback.
 No filled observations, gate evidence or independent material is supplied here.
+## Round2 missing authority handling
+
+Construction disposition: accepted for construction, independence PENDING - Roy,
+runtime-unverified. No current builder/child may act as delegated custodian, author,
+verifier or evaluator stand-in. Only a later actual fresh nonbuilder seat is eligible
+for separately scoped stand-in preparation; it remains not human-independent.
+
+GateContext now requires independence_basis=human_independent before an independent
+gate can PASS, plus all existing genuine human/signature/evidence checks.
+Missing basis or delegated_stand_in refuses; the latter never converts construction
+evidence to independent admission. Identity/lineage/appointment/evidence marker values
+are refused explicitly, including named placeholders and pending/unknown entries.
+Signature and external-grade receipt verifiers must be actual callables; a string
+naming an unavailable verifier is refused before invocation. An always-true callable
+still is not authentic authority and is not supplied by this source.
+
+The [unfilled launch packet](admission/NONBUILDER-LAUNCH.md) lists every introduced
+named placeholder. Run-local placeholders/DL2.json records the same names, locations,
+required actual values and owners, all operational=false. The next non-Dirty integrator/
+authorized operator fills real values only under the standing limits. Grade-plan/2,
+frozen registration joins, builder dev source, NOT_RUN/private-only status, wheel
+boundary and runtime/independent result embargo remain unchanged. No filled identity,
+receipt, signature, independent answer or actual verifier implementation is provided.

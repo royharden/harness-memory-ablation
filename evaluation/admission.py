@@ -52,6 +52,7 @@ class GateContext:
     config_sha256: str | None = None
     image_sha256: str | None = None
     python_version: str | None = None
+    independence_basis: str | None = None
 
 
 @dataclass(frozen=True)
@@ -64,6 +65,20 @@ class GateAssessment:
     pack_sha256: str | None
     checked_items: int = 0
 
+
+def _authority_text(value: Any, label: str) -> str:
+    """Operational identity/evidence references cannot be missing-value markers."""
+    result = text(value, label)
+    normalized = result.casefold().strip()
+    if "placeholder" in normalized or normalized in {
+        "pending", "pending - roy", "unknown", "unassigned", "not_run", "tbd",
+    }:
+        raise Refusal(f"{label}: unresolved identity/authority placeholder")
+    return result
+
+
+def _lineage(value: Any, label: str) -> set[str]:
+    return {_authority_text(item, label) for item in strings(value, label)}
 
 def _items(receipt: dict[str, Any], task_count: int) -> dict[str, dict[str, Any]]:
     if not isinstance(receipt["items"], list):
@@ -185,7 +200,7 @@ def _verify_execution(receipt: dict[str, Any], context: GateContext, root: Path,
         "operator_session", "kit_sha256", "config_sha256", "image_sha256",
         "python_version", "evidence_path", "evidence_sha256",
     }, "operator execution")
-    if execution["operator_session"] != text(context.operator_session, "appointed operator"):
+    if execution["operator_session"] != _authority_text(context.operator_session, "appointed operator"):
         raise Refusal("operator session differs")
     for name in ("kit_sha256", "config_sha256", "image_sha256"):
         if digest(execution[name], name) != digest(getattr(context, name), "pinned " + name):
@@ -242,37 +257,46 @@ def assess_gate(raw: bytes | None, *, root: Path | None = None,
             raise Refusal("controlling plan differs")
         if context is None or root is None:
             raise Refusal("independent appointment/signature context unavailable")
-        if context.verify_signature is None or not context.builder_sessions:
+        if not callable(context.verify_signature) or not context.builder_sessions:
             raise Refusal("trusted verifier or builder lineage registry unavailable")
+        if context.independence_basis == "delegated_stand_in":
+            raise Refusal("delegated stand-in is construction-only; human independence PENDING - Roy")
+        if context.independence_basis != "human_independent":
+            raise Refusal("actual human-independent authority basis unavailable")
+        if not isinstance(context.builder_sessions, frozenset):
+            raise Refusal("trusted builder lineage registry must be an explicit frozen set")
+        for session in context.builder_sessions:
+            _authority_text(session, "builder lineage session")
+        _authority_text(context.custodian_session, "appointed custodian session")
         if context.heldout_task_count not in {36, 48}:
             raise Refusal("invalid held-out design count")
         if context.heldout_task_count == 48 and not context.growth_authorization_ref:
             raise Refusal("prospective growth authorization absent")
         if pack_hash != digest(context.expected_pack_sha256, "expected pack hash"):
             raise Refusal("pack differs from operator-pinned scope")
-        author = text(receipt["author_session"], "author session")
-        author_lineage = set(strings(receipt["author_lineage"], "author lineage"))
-        adversarial = text(receipt["adversarial_session"], "adversarial session")
-        adversarial_lineage = set(strings(receipt["adversarial_lineage"], "adversarial lineage"))
+        author = _authority_text(receipt["author_session"], "author session")
+        author_lineage = _lineage(receipt["author_lineage"], "author lineage")
+        adversarial = _authority_text(receipt["adversarial_session"], "adversarial session")
+        adversarial_lineage = _lineage(receipt["adversarial_lineage"], "adversarial lineage")
         if author != context.custodian_session or author not in author_lineage:
             raise Refusal("custodian session/lineage differs")
         if adversarial not in adversarial_lineage or author_lineage & adversarial_lineage:
             raise Refusal("separate adversarial session required")
         if (author_lineage | adversarial_lineage) & context.builder_sessions:
             raise Refusal("builder lineage cannot establish independent admission")
-        if receipt["custodian_ref"] != text(context.custodian_ref, "appointed custodian"):
+        if receipt["custodian_ref"] != _authority_text(context.custodian_ref, "appointed custodian"):
             raise Refusal("custodian appointment differs")
-        if receipt["human_reviewer_ref"] != text(context.human_reviewer_ref, "appointed human"):
+        if receipt["human_reviewer_ref"] != _authority_text(context.human_reviewer_ref, "appointed human"):
             raise Refusal("human reviewer appointment differs")
         for field in ("reviewed_at", "expected_answers_ref", "attestation_ref", "seal_ref"):
-            text(receipt[field], field)
+            _authority_text(receipt[field], field)
         if receipt["rights_verdict"] != "pass" or receipt["semantic_verdict"] != "pass":
             raise Refusal("rights/semantic verdict absent or refused")
         if receipt["exposure_state"] != "unexposed":
             raise Refusal("exposure invalidates confirmation")
         for role, field in (("custodian", "custodian_signature_ref"),
                             ("human", "human_signature_ref")):
-            if context.verify_signature(role, receipt_hash, text(receipt[field], field)) is not True:
+            if context.verify_signature(role, receipt_hash, _authority_text(receipt[field], field)) is not True:
                 raise Refusal("signature/appointment evidence not verified")
         if not isinstance(receipt["source_hashes"], dict) or not receipt["source_hashes"]:
             raise Refusal("source hashes absent")

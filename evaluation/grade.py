@@ -104,7 +104,7 @@ def bind_external_grade(plan: dict[str, Any], observation: dict[str, Any], *,
     fields = {"attempt_id", "artifact_sha256", "opaque_task_id", "grader_sha256",
               "verdict", "receipt_ref", "receipt_sha256"}
     closed(observation, fields, "external grade")
-    if verify_receipt is None or receipt_root is None or receipt_path is None:
+    if not callable(verify_receipt) or receipt_root is None or receipt_path is None:
         raise Refusal("external grading receipt verifier unavailable")
     for field in ("attempt_id", "artifact_sha256", "opaque_task_id", "grader_sha256"):
         if observation[field] != plan[field]:
