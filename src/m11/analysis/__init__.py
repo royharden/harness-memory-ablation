@@ -191,6 +191,13 @@ def analyze_export(payload: Any) -> dict:
     return {
         "schema_version": "m11-analysis/1", "campaign_id": export["campaign_id"], "mode": mode,
         "experiment_kind": export["experiment_kind"], "construction_status": "runtime-unverified",
+        "construction_context": {
+            "scope": "source phase only; not supplied-observation validation",
+            "disposition": "accepted for construction",
+            "independence_status": "PENDING - Roy",
+            "delegated_stand_in_label": "delegated stand-in, not human-independent",
+            "authority": "no appointment, independent proof, release or runtime permission supplied by analysis",
+        },
         "status": "INCOMPLETE" if missing else "DESCRIPTIVE_ONLY",
         "unavailable_reasons": reasons, "planned_cells": outcomes, "attempts": export["attempts"],
         "groups": groups, "comparisons": descriptive_comparisons(outcomes),

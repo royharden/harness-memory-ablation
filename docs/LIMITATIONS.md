@@ -26,6 +26,10 @@ independent expected-answer worksheets and K/L acceptance remain deferred.
 Round 2 construction is labelled accepted for construction, independence
 PENDING - Roy, runtime-unverified. A supplied delegated stand-in is not
 human-independent; rendering does not appoint or authenticate one. Literal
+Analysis exposes this source-phase construction context in all report formats,
+including JSON, separately from the canonical producer eligibility and data.
+It does not claim an actual stand-in appointment or validate any observation.
+Literal
 placeholder text is escaped when supplied, not filled, interpreted as authority,
 or emitted as invented observations. No actual credential belongs in report data.
 Missing priced observations produce null subtotals with reasons rather than an
