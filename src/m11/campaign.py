@@ -23,6 +23,7 @@ from harnessrun import (
 )
 
 Identifier = Annotated[str, Field(min_length=1, max_length=256)]
+ClaimIdentifier = Annotated[str, Field(min_length=1, max_length=256, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")]
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Money = Annotated[str, Field(pattern=r"^(0|[1-9][0-9]*)(\.[0-9]+)?$")]
 TaskClass = Literal["independent", "decision", "misleading"]
@@ -107,7 +108,7 @@ class SuiteSeed(ClosedModel):
     seed_sha256: Digest
     split: Literal["dev", "heldout"]
     tripwire_ids: Annotated[tuple[Identifier, ...], Field(min_length=4, max_length=4)]
-    claim_ids: Annotated[tuple[Identifier, ...], Field(min_length=4, max_length=4)]
+    claim_ids: Annotated[tuple[ClaimIdentifier, ...], Field(min_length=4, max_length=4)]
     checkpoints: tuple[SeedCheckpoint, ...]
 
     @model_validator(mode="after")
@@ -386,7 +387,7 @@ class PublicClaim(ClosedModel):
     cell_id: Identifier
     attempt_id: Identifier | None
     candidate_sha256: Digest | None
-    claim_id: Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")]
+    claim_id: ClaimIdentifier
     registered: bool
     present: bool | None
     presence_missing_reason: Identifier | None

@@ -38,6 +38,12 @@ receipt reference/hash. Every longitudinal cell retains its four frozen register
 IDs in order, even when all observations are unknown. IDs alone are not observed
 presence/deletion/test results. Unregistered IDs may be transported only with
 `registered=false` and remain outside the fixed denominator four.
+Registration and observations use the same `ClaimIdentifier`: 1–256 ASCII token
+characters, first alphanumeric then alphanumeric/dot/underscore/hyphen. This
+intentionally excludes whitespace, control characters, path/URI delimiters and
+assertion text from new source registrations. It retains the former 256-character
+limit. Any earlier frozen incompatible ID needs an explicit prospective amendment,
+never normalization, truncation, silent conversion or rewriting old manifests.
 Observed claims must resolve to exact checkpoint/attempt artifact and GradeResult
 grader/receipt; missing artifacts/graders never fabricate observations. No assertion
 text, expected values or source paths are transported. Current embargo rejects
