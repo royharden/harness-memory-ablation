@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-09-F1",
+    "type": "decision",
+    "status": "current",
+    "provenance": "synthetic project choice W39",
+    "date": "2026-10-27",
+    "value": "JOIN_PERIOD: use one literal period between normalized words."
+  }
+]

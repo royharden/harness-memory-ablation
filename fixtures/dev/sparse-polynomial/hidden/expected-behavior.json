@@ -1,0 +1,81 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": {
+        "x": 2,
+        "terms": [
+          [
+            0,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            -1
+          ]
+        ]
+      },
+      "expected": 15
+    },
+    {
+      "input": {
+        "x": 0,
+        "terms": [
+          [
+            0,
+            7
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "expected": 7
+    },
+    {
+      "input": {
+        "x": -2,
+        "terms": [
+          [
+            3,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "expected": -22
+    },
+    {
+      "input": {
+        "x": 3,
+        "terms": []
+      },
+      "expected": 0
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "x": 2,
+      "terms": [
+        [
+          -1,
+          1
+        ]
+      ]
+    },
+    {
+      "x": true,
+      "terms": []
+    }
+  ]
+}

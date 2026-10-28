@@ -1,0 +1,35 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": "",
+      "expected": 0
+    },
+    {
+      "input": "1s 25ms",
+      "expected": 1025
+    },
+    {
+      "input": "2ms3s",
+      "expected": 3002
+    },
+    {
+      "input": " 0s\t7ms ",
+      "expected": 7
+    },
+    {
+      "input": "2s2s",
+      "expected": 4000
+    }
+  ],
+  "invalid_inputs": [
+    "-1s",
+    "1.5s",
+    "1",
+    "1m",
+    "1s!",
+    "1 ms"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": {
+        "graph": {
+          "s": [
+            "a",
+            "b"
+          ],
+          "a": [
+            "c"
+          ],
+          "b": [
+            "c"
+          ],
+          "c": []
+        },
+        "start": "s"
+      },
+      "expected": [
+        "s",
+        "b",
+        "a",
+        "c"
+      ]
+    },
+    {
+      "input": {
+        "graph": {
+          "x": [
+            "x"
+          ]
+        },
+        "start": "x"
+      },
+      "expected": [
+        "x"
+      ]
+    },
+    {
+      "input": {
+        "graph": {
+          "a": [
+            "b",
+            "b"
+          ],
+          "b": [],
+          "z": []
+        },
+        "start": "a"
+      },
+      "expected": [
+        "a",
+        "b"
+      ]
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "graph": {
+        "a": [
+          "b"
+        ]
+      },
+      "start": "a"
+    }
+  ]
+}

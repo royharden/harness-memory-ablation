@@ -4,6 +4,11 @@ Status: format only. P0, full-pack admission, independent appointments and all e
 checks are PENDING — needs Roy. This document contains no task, answer, grader or receipt.
 It specifies future records; its presence is never admission evidence.
 
+Source-phase amendment: Roy adopted the delegated 2026-10-27 source ruling
+(SHA256 38fbf484ee1347145f9ab80a971a305f7d4d2d7e3c492cc735183c284a84dbdb).
+It supersedes P0-before-source restrictions below for private Dirty construction only.
+P0 is not waived: no runtime, independent admission or acceptance/validated claim.
+
 Controlling source: private OUTER planning/promoted/PLAN-M11-v1.md, SHA256
 0126184f9d0ddd2de1f0fe4c9e7fb5c170d5676004c0a023bf8fe63d53c8e99c.
 Section numbers below refer to that immutable plan. The portable format below is a

@@ -1,0 +1,48 @@
+{
+  "schema_version": "m11-dev-task/1",
+  "id": "dev-11",
+  "family": "grid-adjacency",
+  "task_class": "decision-dependent",
+  "author_session": "01a17fb8-64ab-7100-a6b0-b100ed2206ab",
+  "author_callsign": "0985_Codex_gpt-61-sol_Sub_M11DevTasks",
+  "independence": "builder_lineage",
+  "rights": "private_only_pending_review",
+  "rights_review": "PENDING",
+  "semantic_review": "PENDING",
+  "execution_status": "NOT_RUN",
+  "expected_behavior_authorship": "builder-authored, not independent",
+  "patch_format": "full_replacement_tree",
+  "patch_application": "replace candidate core.py and helpers.py with named tree; never expose hidden/oracle/wrong/metadata to candidate",
+  "grader_contract": "future isolated trusted grader sets candidate module root on import path and loads checker by file; inventory tools must not import candidate",
+  "wrong_variants": [
+    {
+      "path": "wrong/1",
+      "deliberate_change": "[(0, -1), (-1, 0), (0, 1), (1, 0)] -> [(-1, 0), (0, 1), (1, 0), (0, -1)]"
+    },
+    {
+      "path": "wrong/2",
+      "deliberate_change": "0 <= nr < rows and 0 <= nc < cols -> 0 <= nr <= rows and 0 <= nc <= cols"
+    },
+    {
+      "path": "wrong/3",
+      "deliberate_change": "result.append([nr, nc]) -> result.append([nc, nr])"
+    }
+  ],
+  "memory": {
+    "fields": [
+      "id",
+      "type",
+      "status",
+      "provenance",
+      "date",
+      "value"
+    ],
+    "m0": "absent",
+    "m1": "memory/m1.md",
+    "m2": "memory/m2.json",
+    "canonical": "memory/facts.json",
+    "native_loading": "NOT_VERIFIED",
+    "semantic_equality": "NOT_VERIFIED",
+    "native_token_counts": null
+  }
+}

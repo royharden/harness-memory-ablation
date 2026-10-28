@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-14-F1",
+    "type": "gotcha",
+    "status": "stale",
+    "provenance": "retired normalizer prototype P0; current contract rejects traversal",
+    "date": "2026-10-27",
+    "value": "Clamp attempts to climb above root and continue normalization."
+  }
+]

@@ -1,0 +1,479 @@
+{
+  "schema_version": "m11-dev-inventory/1",
+  "split": "dev",
+  "author_session": "01a17fb8-64ab-7100-a6b0-b100ed2206ab",
+  "author_callsign": "0985_Codex_gpt-61-sol_Sub_M11DevTasks",
+  "independence": "builder_lineage",
+  "rights": "private_only_pending_review",
+  "execution_status": "NOT_RUN",
+  "tasks": [
+    {
+      "id": "dev-01",
+      "family": "span-fusion",
+      "task_class": "memory-independent",
+      "path": "span-fusion",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-02",
+      "family": "dependency-order",
+      "task_class": "memory-independent",
+      "path": "dependency-order",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-03",
+      "family": "escaped-fields",
+      "task_class": "memory-independent",
+      "path": "escaped-fields",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-04",
+      "family": "adjacent-runs",
+      "task_class": "memory-independent",
+      "path": "adjacent-runs",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-05",
+      "family": "trailing-maxima",
+      "task_class": "memory-independent",
+      "path": "trailing-maxima",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-06",
+      "family": "record-overlay",
+      "task_class": "memory-independent",
+      "path": "record-overlay",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-07",
+      "family": "quantized-ties",
+      "task_class": "decision-dependent",
+      "path": "quantized-ties",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-08",
+      "family": "frontier-walk",
+      "task_class": "decision-dependent",
+      "path": "frontier-walk",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-09",
+      "family": "word-joiner",
+      "task_class": "decision-dependent",
+      "path": "word-joiner",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-10",
+      "family": "revision-choice",
+      "task_class": "decision-dependent",
+      "path": "revision-choice",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-11",
+      "family": "grid-adjacency",
+      "task_class": "decision-dependent",
+      "path": "grid-adjacency",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-12",
+      "family": "threshold-buckets",
+      "task_class": "decision-dependent",
+      "path": "threshold-buckets",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-13",
+      "family": "literal-redactor",
+      "task_class": "misleading-memory",
+      "path": "literal-redactor",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-14",
+      "family": "rooted-path",
+      "task_class": "misleading-memory",
+      "path": "rooted-path",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-15",
+      "family": "sparse-polynomial",
+      "task_class": "misleading-memory",
+      "path": "sparse-polynomial",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-16",
+      "family": "weighted-check",
+      "task_class": "misleading-memory",
+      "path": "weighted-check",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-17",
+      "family": "rectangular-turn",
+      "task_class": "misleading-memory",
+      "path": "rectangular-turn",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    },
+    {
+      "id": "dev-18",
+      "family": "duration-terms",
+      "task_class": "misleading-memory",
+      "path": "duration-terms",
+      "visible_paths": [
+        "task.md",
+        "fixture/core.py",
+        "fixture/helpers.py",
+        "public/test_contract.py"
+      ],
+      "hidden_paths": [
+        "hidden/test_contract.py",
+        "hidden/expected-behavior.json"
+      ],
+      "oracle_paths": [
+        "oracle/core.py",
+        "oracle/helpers.py"
+      ],
+      "wrong_paths": [
+        "wrong/1",
+        "wrong/2",
+        "wrong/3"
+      ],
+      "memory_fact_path": "memory/facts.json"
+    }
+  ]
+}

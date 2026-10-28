@@ -1,0 +1,64 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": {},
+      "expected": []
+    },
+    {
+      "input": {
+        "b": [],
+        "a": []
+      },
+      "expected": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "input": {
+        "a": [
+          "b",
+          "b"
+        ],
+        "b": [],
+        "c": []
+      },
+      "expected": [
+        "b",
+        "a",
+        "c"
+      ]
+    },
+    {
+      "input": {
+        "x": [
+          "y"
+        ],
+        "y": [
+          "z"
+        ],
+        "z": []
+      },
+      "expected": [
+        "z",
+        "y",
+        "x"
+      ]
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "a": [
+        "b"
+      ]
+    },
+    {
+      "a": [
+        "a"
+      ]
+    }
+  ]
+}

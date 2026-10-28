@@ -1,0 +1,311 @@
+{
+  "schema_version": "m11-dev-static-source-review/1",
+  "author_session": "01a17fb8-64ab-7100-a6b0-b100ed2206ab",
+  "author_callsign": "0985_Codex_gpt-61-sol_Sub_M11DevTasks",
+  "independence": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "review_scope": "AST syntax, JSON parse, declared path existence, source file line counts, memory field-text/byte checks only",
+  "tasks": 18,
+  "class_counts": {
+    "memory-independent": 6,
+    "decision-dependent": 6,
+    "misleading-memory": 6
+  },
+  "task_python_files": 216,
+  "candidate_plus_checker_sizes": {
+    "dev-01": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-02": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-03": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-04": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-05": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-06": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-07": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-08": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-09": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-10": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-11": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-12": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-13": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-14": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-15": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-16": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-17": {
+      "modules": 4,
+      "lines": 86
+    },
+    "dev-18": {
+      "modules": 4,
+      "lines": 86
+    }
+  },
+  "memory_checks": [
+    {
+      "id": "dev-01",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-02",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-03",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-04",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-05",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-06",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 261,
+        "m2.json": 270
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-07",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 267,
+        "m2.json": 276
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-08",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 258,
+        "m2.json": 267
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-09",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 238,
+        "m2.json": 247
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-10",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 255,
+        "m2.json": 264
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-11",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 240,
+        "m2.json": 249
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-12",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 257,
+        "m2.json": 266
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-13",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 252,
+        "m2.json": 261
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-14",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 274,
+        "m2.json": 283
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-15",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 285,
+        "m2.json": 294
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-16",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 249,
+        "m2.json": 258
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-17",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 271,
+        "m2.json": 280
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    },
+    {
+      "id": "dev-18",
+      "fact_count": 1,
+      "typed_fields_match": true,
+      "m1_all_field_text_present": true,
+      "bytes": {
+        "m1.md": 275,
+        "m2.json": 284
+      },
+      "native_loading": "NOT_VERIFIED",
+      "semantic_equivalence": "NOT_VERIFIED"
+    }
+  ],
+  "errors": [],
+  "semantic_review": "PENDING",
+  "rights_review": "PENDING",
+  "runtime_checks": "NOT_RUN"
+}

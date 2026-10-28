@@ -1,0 +1,50 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": {
+        "text": "abcab",
+        "secrets": [
+          "ab",
+          "abc"
+        ]
+      },
+      "expected": "*****"
+    },
+    {
+      "input": {
+        "text": "A.a",
+        "secrets": [
+          "a"
+        ]
+      },
+      "expected": "A.*"
+    },
+    {
+      "input": {
+        "text": "x.y",
+        "secrets": [
+          "."
+        ]
+      },
+      "expected": "x*y"
+    },
+    {
+      "input": {
+        "text": "",
+        "secrets": []
+      },
+      "expected": ""
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "text": "a",
+      "secrets": [
+        ""
+      ]
+    }
+  ]
+}
