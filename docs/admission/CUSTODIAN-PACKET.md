@@ -1,13 +1,17 @@
 # External custodian packet — unfilled
 
-This is an authoring and adversarial-check PLAN for an externally appointed
-nonbuilder custodian, separate adversarial session and named human reviewer.
-It appoints nobody, supplies no expected answer and creates no admission receipt.
-All execution and independent gates remain pending. Current builders/children may
-not fill those independent roles. Private source construction is runtime-unverified.
+Round2 disposition: accepted for construction, independence PENDING - Roy,
+runtime-unverified. This is an unfilled external authoring/adversarial PLAN, not a
+gate receipt or appointment. A future fresh nonbuilder agent may be a delegated
+stand-in, not human-independent; this INT, every DL and all their children are
+ineligible even with fresh context/different model. No eligible seat or human is
+named here. See [nonbuilder launch packet](NONBUILDER-LAUNCH.md) for exact app/source
+read grants and missing-value slots. Current builders create no independent data.
 
-1. Roy appoints the actual independent custodian and human semantic/rights reviewer;
-   record real sessions/lineage, identities and scope outside builder authorship.
+1. An authorized operator may later open a real fresh nonbuilder seat after recording
+   actual session/lineage and bounded scope. Label its preparation delegated stand-in,
+   not human-independent. Roy's real human semantic/rights appointment remains pending;
+   operator selection of an agent cannot supply it or create independent admission.
 2. Custodian authors fresh original standard-library Python sample: three P0 tasks,
    one/class; one seed/four tripwires/two reference checkpoints; correct patches,
    three plausible wrong patches per task and independent expected-behavior tables.
@@ -77,3 +81,23 @@ the public producer must validate them, with no legacy/default-empty adaptation.
 This packet authors no observation and releases no result; frozen-final-analysis
 embargo, current literal-false independent eligibility and separate rights approval
 remain intact.
+
+## Round2 evidence classification and unresolved inputs
+
+GateContext.independence_basis must be explicitly human_independent for a future
+independent P0/full_pack evaluation, with real appointed human/custodian signature
+authority and verified complete evidence. Default missing basis refuses. Explicit
+delegated_stand_in refuses independent gate PASS regardless of lineage separation:
+it denotes construction-only preparation, independence PENDING - Roy.
+Missing/placeholder session or lineage values, appointment/evidence references and
+noncallable receipt/signature verifiers refuse. No placeholder is an authority,
+operational default, signer, receipt, model pin or observed result. An unattempted
+gate remains PENDING; attempted incomplete evidence remains NO-GO. Grade-plan/2 and
+all exact frozen bindings stay unchanged.
+
+No model/API/test/kit/runtime/container/install is activated by this packet or the
+launch template. M11 retains no installs and source-only checks. Actual P0 bootstrap
+or later runtime needs its own explicit operator authorization and required evidence;
+before any future approved runtime/container, record free RAM above3GB and inform Roy.
+Protected databases55490/21800, Docker/WSL and all outside apps are untouched.
+USD40 is the total testing ceiling; spent0, no spending without Roy-supplied authority.
