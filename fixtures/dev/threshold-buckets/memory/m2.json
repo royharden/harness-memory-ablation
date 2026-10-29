@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-12-F1",
+    "type": "decision",
+    "status": "current",
+    "provenance": "synthetic project choice T63",
+    "date": "2026-10-27",
+    "value": "EQUALITY_LOWER: equality stays in the lower bucket; count strictly smaller cuts."
+  }
+]

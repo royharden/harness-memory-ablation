@@ -1,0 +1,28 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": "/a//b/../c/",
+      "expected": "/a/c"
+    },
+    {
+      "input": "/",
+      "expected": "/"
+    },
+    {
+      "input": "/a/..././",
+      "expected": "/a/..."
+    },
+    {
+      "input": "/a/../",
+      "expected": "/"
+    }
+  ],
+  "invalid_inputs": [
+    "/../a",
+    "/a/../../x",
+    "relative"
+  ]
+}

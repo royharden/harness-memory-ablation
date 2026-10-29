@@ -1,0 +1,52 @@
+{
+  "independent": false,
+  "author": "builder_lineage",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "input": [],
+      "expected": 0
+    },
+    {
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "expected": 14
+    },
+    {
+      "input": [
+        255,
+        255
+      ],
+      "expected": 12
+    },
+    {
+      "input": [
+        0,
+        1,
+        0
+      ],
+      "expected": 2
+    },
+    {
+      "input": [
+        250,
+        1
+      ],
+      "expected": 1
+    }
+  ],
+  "invalid_inputs": [
+    [
+      256
+    ],
+    [
+      -1
+    ],
+    [
+      true
+    ]
+  ]
+}

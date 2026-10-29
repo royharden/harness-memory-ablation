@@ -3,3 +3,20 @@ __pycache__/
 *.pyc
 .venv/
 runs/
+
+# Local credentials and generated outputs must never enter the repository.
+.env
+.env.*
+.creds/
+ArchiveManager-creds.txt
+*.key
+*.pem
+*.p12
+*.pfx
+node_modules/
+dist/
+build/
+*.zip
+*.7z
+*.tar
+*.tar.gz

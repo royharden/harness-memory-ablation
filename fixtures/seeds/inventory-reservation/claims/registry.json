@@ -1,0 +1,46 @@
+{
+  "schema_version": "m11-dev-claims/1",
+  "execution_status": "NOT_RUN",
+  "claims": [
+    {
+      "id": "inventory-reservation-C1",
+      "assertion": "Reserving supply never mutates the caller reservation mapping.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-inventory-reservation-C1"
+      },
+      "check_path": "claims/check_C1.py",
+      "check_callable": "test_claim_C1"
+    },
+    {
+      "id": "inventory-reservation-C2",
+      "assertion": "Requests above available supply raise ValueError.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-inventory-reservation-C2"
+      },
+      "check_path": "claims/check_C2.py",
+      "check_callable": "test_claim_C2"
+    },
+    {
+      "id": "inventory-reservation-C3",
+      "assertion": "Missing SKUs have zero available supply.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-inventory-reservation-C3"
+      },
+      "check_path": "claims/check_C3.py",
+      "check_callable": "test_claim_C3"
+    },
+    {
+      "id": "inventory-reservation-C4",
+      "assertion": "A zero reservation preserves the existing quantity.",
+      "source_anchor": {
+        "path": "README.md",
+        "anchor": "claim-inventory-reservation-C4"
+      },
+      "check_path": "claims/check_C4.py",
+      "check_callable": "test_claim_C4"
+    }
+  ]
+}

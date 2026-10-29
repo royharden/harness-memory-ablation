@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-15-F1",
+    "type": "decision",
+    "status": "decoy",
+    "provenance": "unadopted sparse representation sketch S0; current contract is additive",
+    "date": "2026-10-27",
+    "value": "Repeated exponents overwrite prior coefficients rather than adding."
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "DEV-05-F1",
+    "type": "convention",
+    "status": "current",
+    "provenance": "synthetic housekeeping; irrelevant to solve",
+    "date": "2026-10-27",
+    "value": "Review notes use UTC dates; this does not affect function behavior."
+  }
+]
